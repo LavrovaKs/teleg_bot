@@ -1,5 +1,11 @@
 package ru.urfu;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Paths;
+
 public class ChatBot {
 
     protected String start = "/start";
@@ -10,9 +16,15 @@ public class ChatBot {
     protected String helpMessage = "Список доступных команд: \n/help - открыть справку \n/exercise - выбор задания";
     protected String exerciseMessage = "Введите номер задания";
 
-    public String sendExercise(int number) {
-        if (number == 1)
-            return "Задание №1";
-        return "no number";
+    public void sendExercise(int number) throws IOException {
+        if (number == 5){
+            try (BufferedReader in = new BufferedReader(new FileReader(String.valueOf(Paths.get("").toAbsolutePath().resolve("scr/main/exercises/ex5.txt"))))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        }
+        else System.out.println("no text");
     }
 }
