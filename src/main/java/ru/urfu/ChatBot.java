@@ -2,15 +2,17 @@ package ru.urfu;
 
 public class ChatBot {
 
-    private String start = "/start";
-    private String help = "/help";
-    private String exercise = "/exercise";
+    protected String start = "/start";
+    protected String help = "/help";
+    protected String exercise = "/exercise";
+    protected String startMessage = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
+            "\nсписок доступных команд:\n/help - открыть справку";
+    protected String helpMessage = "Список доступных команд: \n/help - открыть справку \n/exercise - выбор задания";
+    protected String exerciseMessage = "Введите номер задания";
 
-    public String command(String text){
-        if (text.equals(start))
-            return "start";
-        else if (text.equals(help))
-            return "help";
-        else return "No command";
+    public String sendExercise(int number) {
+        if (number == 1)
+            return "Задание №1";
+        return "no number";
     }
 }
