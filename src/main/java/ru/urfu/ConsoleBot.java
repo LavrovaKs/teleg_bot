@@ -6,27 +6,32 @@ import java.util.regex.Pattern;
 
 public class ConsoleBot {
 
-    public static void main(String[] args) throws IOException {
-        var chatBot = new ChatBot();
+    public void chatToUser(ChatBot chatBot) throws IOException {
         System.out.println("Напиши /start, чтобы начать");
         while (true) {
             var text = new Scanner(System.in);
             String str = text.nextLine();
-            if(Pattern.matches("\\d", str)){
-                chatBot.sendExercise(Integer.parseInt(str));
-            }
-            else
-                System.out.println(getCommand(str, chatBot));
+            System.out.println(sendMassage(str, chatBot));
         }
     }
-    public static String getCommand(String com, ChatBot bot){
-        if(com.equals(bot.start))
+
+    public String sendMassage(String com, ChatBot bot) throws IOException {
+        if(Pattern.matches("\\d+", com)) {
+            var mes = bot.sendExercise(Integer.parseInt(com));
+            System.out.println(mes.getExercise());
+            if (mes.getExercise().equals(" "))
+                return mes.getAnswer();
+            else if (bot.compareAnswer(mes.getAnswer()))
+                return bot.trueAnswer;
+            else
+                return bot.falseAnswer + mes.getAnswer();
+        }
+        else if (com.equals(bot.start))
             return bot.startMessage;
         else  if (com.equals(bot.help))
             return bot.helpMessage;
         else if (com.equals(bot.exercise))
             return bot.exerciseMessage;
-
-        return "no command";
+        return bot.noCommand;
     }
 }
