@@ -9,18 +9,23 @@ import java.util.Scanner;
 
 public class ChatBot {
 
-    protected String start = "/start";
-    protected String help = "/help";
-    protected String exercise = "/exercise";
-    protected String startMessage = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
+    protected static final String START = "/start";
+    protected static final String HELP = "/help";
+    protected static final String EXERCISE = "/exercise";
+    protected static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
             "\nсписок доступных команд:\n/help - открыть справку\n/exercise - выбор задания";
-    protected String helpMessage = "Список доступных команд: \n/help - открыть справку \n/exercise - выбор задания";
-    protected String exerciseMessage = "Введите номер задания";
-    protected String noCommand = "Не уверен, что такая команда мне по силам";
-    protected String trueAnswer = "Правильный ответ!";
-    protected String falseAnswer = "Правильный ответ: ";
-    protected String noExercise = "Нет такого номера задания";
+    protected static final String HELP_MESSAGE = "Список доступных команд: \n/help - открыть справку \n/exercise - выбор задания";
+    protected static final String EXERCISE_MESSAGE = "Введите номер задания";
+    protected static final String NO_COMMAND = "Не уверен, что такая команда мне по силам";
+    protected static final String TRUE_ANSWER = "Правильный ответ!";
+    protected static final String FALSE_ANSWER = "Правильный ответ: ";
+    protected static final String NO_EXERCISE = "Нет такого номера задания";
 
+    /**
+     *
+     * @param number - номер задания
+     * @return ответ, задание
+     */
     public Pair sendExercise(int number) throws IOException {
         if (number > 0 && number < 24) {
             var path = String.valueOf(Paths.get("").toAbsolutePath().resolve("src/main/exercises/ex"
@@ -32,7 +37,6 @@ public class ChatBot {
                 while ((line = in.readLine()) != null){
                     exercise.add(line);
                 }
-                in.close();
                 var answer = exercise.remove(exercise.size() - 1);
                 for (String s : exercise) {
                     ex.append(s);
@@ -41,15 +45,25 @@ public class ChatBot {
                 return new Pair(answer, ex.toString());
             }
         }
-        else return new Pair(noExercise, " ");
+        else return new Pair(NO_EXERCISE, " ");
     }
 
+    /**
+     *
+     * @param answer - ответ
+     * @return верен ли ответ
+     */
     public Boolean compareAnswer(String answer){
         var text = new Scanner(System.in);
         String str = text.nextLine();
         return str.equals(answer);
     }
 
+    /**
+     *
+     * @param number - номер задания
+     * @return текст задания
+     */
     public String sendExTeleg(int number) throws IOException {
         if (number > 0 && number < 24) {
             var path = String.valueOf(Paths.get("").toAbsolutePath().resolve("src/main/exercises/ex"

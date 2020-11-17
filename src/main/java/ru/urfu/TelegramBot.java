@@ -16,18 +16,18 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private static final String BOT_TOKEN = "1360870382:AAHQiNwIXLcctU6Qb2gUhoja5UWD79lT0K8";
     private static final String BOT_NAME = "ImformaticBot";
+    private ChatBot chatBot = new ChatBot();
 
     @Override
     public void onUpdateReceived(Update update) {
-        ChatBot chatBot = new ChatBot();
         Message message = update.getMessage();
         String txt = message.getText();
-        if (txt.equals(chatBot.start))
-            sendMsg(message, chatBot.startMessage);
-        else if (txt.equals(chatBot.help))
-              sendMsg(message, chatBot.helpMessage);
-        else if (txt.equals(chatBot.exercise))
-            sendMsg(message, chatBot.exerciseMessage);
+        if (txt.equals(ChatBot.START))
+            sendMsg(message, ChatBot.START_MESSAGE);
+        else if (txt.equals(ChatBot.HELP))
+              sendMsg(message, ChatBot.HELP_MESSAGE);
+        else if (txt.equals(ChatBot.EXERCISE))
+            sendMsg(message, ChatBot.EXERCISE_MESSAGE);
         else if(Pattern.matches("\\d+", txt)){
             var ex = " ";
             try {
@@ -39,6 +39,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     *
+     * @param msg - сообщение пользователя
+     * @param text - текст сообщения
+     */
     private void sendMsg(Message msg, String text) {
 
         SendMessage sendMessage = new SendMessage();

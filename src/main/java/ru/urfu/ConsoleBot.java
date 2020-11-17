@@ -15,23 +15,23 @@ public class ConsoleBot {
         }
     }
 
-    public String sendMassage(String com, ChatBot bot) throws IOException {
-        if(Pattern.matches("\\d+", com)) {
-            var mes = bot.sendExercise(Integer.parseInt(com));
+    String sendMassage(String command, ChatBot bot) throws IOException {
+        if(Pattern.matches("-?\\d+", command)) {
+            var mes = bot.sendExercise(Integer.parseInt(command));
             System.out.println(mes.getExercise());
             if (mes.getExercise().equals(" "))
                 return mes.getAnswer();
             else if (bot.compareAnswer(mes.getAnswer()))
-                return bot.trueAnswer;
+                return ChatBot.TRUE_ANSWER;
             else
-                return bot.falseAnswer + mes.getAnswer();
+                return ChatBot.FALSE_ANSWER + mes.getAnswer();
         }
-        else if (com.equals(bot.start))
-            return bot.startMessage;
-        else  if (com.equals(bot.help))
-            return bot.helpMessage;
-        else if (com.equals(bot.exercise))
-            return bot.exerciseMessage;
-        return bot.noCommand;
+        else if (command.equals(ChatBot.START))
+            return ChatBot.START_MESSAGE;
+        else  if (command.equals(ChatBot.HELP))
+            return ChatBot.HELP_MESSAGE;
+        else if (command.equals(ChatBot.EXERCISE))
+            return ChatBot.EXERCISE_MESSAGE;
+        return ChatBot.NO_COMMAND;
     }
 }
