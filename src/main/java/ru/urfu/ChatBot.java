@@ -53,7 +53,7 @@ public class ChatBot {
                 return new Pair(answer, ex.toString());
             }
         }
-        else return new Pair(" ", NO_COMMAND);
+        else return new Pair(" ", NO_EXERCISE);
     }
 
 
@@ -89,6 +89,14 @@ public class ChatBot {
                 return TRUE_ANSWER;
             else return FALSE_ANSWER + answer;
         }
-        else return NO_COMMAND;
+        else {
+            if (contexts.get(chatId).getCurrentState() instanceof WaitingAnswer)
+                contexts.get(chatId).switchState();
+            if (contexts.get(chatId).getCurrentState() instanceof WaitingEx){
+                contexts.get(chatId).switchState();
+                contexts.get(chatId).switchState();
+            }
+            return NO_COMMAND;
+        }
     }
 }
