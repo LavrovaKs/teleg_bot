@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class ChatBot {
 
@@ -15,7 +16,8 @@ public class ChatBot {
     protected static final String EXERCISE = "/exercise";
     protected static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
             "\nсписок доступных команд:\n/help - открыть справку\n/exercise - выбор задания";
-    protected static final String HELP_MESSAGE = "Список доступных команд: \n/help - открыть справку \n/exercise - выбор задания";
+    protected static final String HELP_MESSAGE = "Список доступных команд: \n/help - открыть справку " +
+            "\n/exercise - выбор задания";
     protected static final String EXERCISE_MESSAGE = "Введите номер задания";
     protected static final String NO_COMMAND = "Не уверен, что такая команда мне по силам";
     protected static final String TRUE_ANSWER = "Правильный ответ!";
@@ -24,7 +26,8 @@ public class ChatBot {
 
     protected HashMap<String, String> state = new HashMap<>();//ключ - chatId, значение - ответ
 
-    public Context context = new Context();
+    protected HashMap<String, Context> contexts = new HashMap<>();//ключ - chatId, значение - сщстояние
+
 
     /**
      *
@@ -50,56 +53,74 @@ public class ChatBot {
                 return new Pair(answer, ex.toString());
             }
         }
-        else return new Pair(NO_EXERCISE, " ");
+        else return new Pair(" ", NO_COMMAND);
     }
 
-    /**
-     *
-     * @param answer - ответ
-     * @return верен ли ответ
-     */
-    public Boolean compareAnswer(String answer){
-        var text = new Scanner(System.in);
-        String str = text.nextLine();
-        return str.equals(answer);
-    }
+//    /**
+//     *
+//     * @param answer - ответ
+//     * @return верен ли ответ
+//     */
+//    public Boolean compareAnswer(String answer){
+//        var text = new Scanner(System.in);
+//        String str = text.nextLine();
+//        return str.equals(answer);
+//    }
 
-    /**
-     *
-     * @param number - номер задания
-     * @return текст задания
-     */
-    public String sendExTeleg(int number) throws IOException {
-        if (number > 0 && number < 24) {
-            var path = String.valueOf(Paths.get("").toAbsolutePath().resolve("src/main/exercises/ex"
-                    + number + ".txt"));
-            try (BufferedReader in = new BufferedReader(new FileReader(path))) {
-                String line;
-                StringBuilder ex = new StringBuilder();
-                while ((line = in.readLine()) != null){
-                    ex.append(line);
-                    ex.append('\n');
-                }
-                in.close();
-                return ex.toString();
-            }
-        }
-        else return null;
-    }
+//    /**
+//     *
+//     * @param number - номер задания
+//     * @return текст задания
+//     */
+//    public String sendExTeleg(int number) throws IOException {
+//        if (number > 0 && number < 24) {
+//            var path = String.valueOf(Paths.get("").toAbsolutePath().resolve("src/main/exercises/ex"
+//                    + number + ".txt"));
+//            try (BufferedReader in = new BufferedReader(new FileReader(path))) {
+//                String line;
+//                StringBuilder ex = new StringBuilder();
+//                while ((line = in.readLine()) != null){
+//                    ex.append(line);
+//                    ex.append('\n');
+//                }
+//                return ex.toString();
+//            }
+//        }
+//        else return NO_EXERCISE;
+//    }
 
 
-    public String sendMessage(String command) {
+    public String sendMessage(String command, String chatId) throws IOException {
         if (command.equals(START))
             return START_MESSAGE;
         if (command.equals(HELP))
             return HELP_MESSAGE;
         if (command.equals(EXERCISE)) {
-            context.setCurrentState(new WaitingEx());
+            if(!contexts.containsKey(chatId)){
+                var context = new Context();
+                context.setCurrentState(new WaitingEx());
+                contexts.put(chatId, context);
+            }
             return EXERCISE_MESSAGE;
         }
-//        if(Pattern.matches("-?\\d+", command)) {
-//            var mes = sendExercise(Integer.parseInt(command));
-//        }
+        if((Pattern.matches("-?\\d+", command))&& (contexts.get(chatId).getCurrentState()
+                instanceof WaitingEx)) {
+            var context = contexts.get(chatId);
+            var con = context.getCurrentState().getNext();
+            contexts.get(chatId).setCurrentState(con);
+            var mes = sendExercise(Integer.parseInt(command));
+            if (!mes.getAnswer().equals(" "))
+                state.put(chatId, mes.getAnswer());
+            return mes.getExercise();
+        }
+        if //(((contexts.get(chatId)).getCurrentState() instanceof WaitingAnswer) &&
+                (Pattern.matches("-?[0-9a-zA-Z]*", command)){
+            contexts.remove(chatId);
+            var answer = state.remove(chatId);
+            if (answer.equals(command))
+                return TRUE_ANSWER;
+            else return FALSE_ANSWER + answer;
+        }
         else return NO_COMMAND;
     }
 }

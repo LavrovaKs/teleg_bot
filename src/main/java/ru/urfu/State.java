@@ -2,7 +2,6 @@ package ru.urfu;
 
 
 interface State {
-    //public State currentState;
     void setNext();
     State getState();
     State getNext();
@@ -78,5 +77,5 @@ class Context {
 
     public State getCurrentState(){ return currentState; }
 
-    public State switchState(State s){ return currentState.getNext(); }
+    public State switchState(){ return currentState.getNext(); }
 }
