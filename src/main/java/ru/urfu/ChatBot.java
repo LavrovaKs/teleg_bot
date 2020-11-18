@@ -56,66 +56,34 @@ public class ChatBot {
         else return new Pair(" ", NO_COMMAND);
     }
 
-//    /**
-//     *
-//     * @param answer - ответ
-//     * @return верен ли ответ
-//     */
-//    public Boolean compareAnswer(String answer){
-//        var text = new Scanner(System.in);
-//        String str = text.nextLine();
-//        return str.equals(answer);
-//    }
-
-//    /**
-//     *
-//     * @param number - номер задания
-//     * @return текст задания
-//     */
-//    public String sendExTeleg(int number) throws IOException {
-//        if (number > 0 && number < 24) {
-//            var path = String.valueOf(Paths.get("").toAbsolutePath().resolve("src/main/exercises/ex"
-//                    + number + ".txt"));
-//            try (BufferedReader in = new BufferedReader(new FileReader(path))) {
-//                String line;
-//                StringBuilder ex = new StringBuilder();
-//                while ((line = in.readLine()) != null){
-//                    ex.append(line);
-//                    ex.append('\n');
-//                }
-//                return ex.toString();
-//            }
-//        }
-//        else return NO_EXERCISE;
-//    }
-
 
     public String sendMessage(String command, String chatId) throws IOException {
+        if(!contexts.containsKey(chatId)){
+            var context = new Context();
+            var waiting = new WaitingMessage();
+            waiting.setNext();
+            context.setCurrentState(waiting);
+            contexts.put(chatId, context);
+        }
         if (command.equals(START))
             return START_MESSAGE;
         if (command.equals(HELP))
             return HELP_MESSAGE;
         if (command.equals(EXERCISE)) {
-            if(!contexts.containsKey(chatId)){
-                var context = new Context();
-                context.setCurrentState(new WaitingEx());
-                contexts.put(chatId, context);
-            }
+            contexts.get(chatId).switchState();
             return EXERCISE_MESSAGE;
         }
-        if((Pattern.matches("-?\\d+", command))&& (contexts.get(chatId).getCurrentState()
+        if((Pattern.matches("-?\\d+", command)) && (contexts.get(chatId).getCurrentState()
                 instanceof WaitingEx)) {
-            var context = contexts.get(chatId);
-            var con = context.getCurrentState().getNext();
-            contexts.get(chatId).setCurrentState(con);
+            contexts.get(chatId).switchState();
             var mes = sendExercise(Integer.parseInt(command));
             if (!mes.getAnswer().equals(" "))
                 state.put(chatId, mes.getAnswer());
             return mes.getExercise();
         }
-        if //(((contexts.get(chatId)).getCurrentState() instanceof WaitingAnswer) &&
-                (Pattern.matches("-?[0-9a-zA-Z]*", command)){
-            contexts.remove(chatId);
+        if (((contexts.get(chatId)).getCurrentState() instanceof WaitingAnswer) &&
+                (Pattern.matches("-?[0-9a-zA-Z]*", command))){
+            contexts.get(chatId).switchState();
             var answer = state.remove(chatId);
             if (answer.equals(command))
                 return TRUE_ANSWER;

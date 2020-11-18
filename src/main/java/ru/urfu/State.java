@@ -35,7 +35,7 @@ class WaitingAnswer implements State{
 
     @Override
     public void setNext() {
-        nextState = new CheckAnswer();
+        nextState = new WaitingMessage();
     }
 
     @Override
@@ -49,13 +49,13 @@ class WaitingAnswer implements State{
     }
 }
 
-class CheckAnswer implements State{
+class WaitingMessage implements State{
 
     private State nextState;
 
     @Override
     public void setNext() {
-        nextState = new WaitingAnswer();
+        nextState = new WaitingEx();
     }
 
     @Override
@@ -77,5 +77,8 @@ class Context {
 
     public State getCurrentState(){ return currentState; }
 
-    public State switchState(){ return currentState.getNext(); }
+    public void switchState(){
+        currentState.setNext();
+        setCurrentState(currentState.getNext());
+    }
 }
