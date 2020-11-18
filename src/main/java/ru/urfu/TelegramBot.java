@@ -18,6 +18,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private static final String BOT_NAME = "ImformaticBot";
     private ChatBot chatBot = new ChatBot();
 
+    //String answer = chatBot.sendMessage(txt)
+    //sendMsg(message, answer)
+
     @Override
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();

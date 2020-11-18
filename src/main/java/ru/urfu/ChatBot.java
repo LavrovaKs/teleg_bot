@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class ChatBot {
@@ -20,6 +21,10 @@ public class ChatBot {
     protected static final String TRUE_ANSWER = "Правильный ответ!";
     protected static final String FALSE_ANSWER = "Правильный ответ: ";
     protected static final String NO_EXERCISE = "Нет такого номера задания";
+
+    protected HashMap<String, String> state = new HashMap<>();//ключ - chatId, значение - ответ
+
+    public Context context = new Context();
 
     /**
      *
@@ -80,5 +85,21 @@ public class ChatBot {
             }
         }
         else return null;
+    }
+
+
+    public String sendMessage(String command) {
+        if (command.equals(START))
+            return START_MESSAGE;
+        if (command.equals(HELP))
+            return HELP_MESSAGE;
+        if (command.equals(EXERCISE)) {
+            context.setCurrentState(new WaitingEx());
+            return EXERCISE_MESSAGE;
+        }
+//        if(Pattern.matches("-?\\d+", command)) {
+//            var mes = sendExercise(Integer.parseInt(command));
+//        }
+        else return NO_COMMAND;
     }
 }
