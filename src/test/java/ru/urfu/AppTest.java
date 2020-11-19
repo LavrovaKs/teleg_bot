@@ -1,6 +1,5 @@
 package ru.urfu;
 
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +9,7 @@ import java.io.IOException;
 
 public class AppTest 
 {
-    //ConsoleBot consoleBot = new ConsoleBot();
+
     ChatBot chatBot = new ChatBot();
     String chatId = "859";
 
@@ -35,10 +34,9 @@ public class AppTest
 
     @Test
     public void noExTest() throws IOException {
+        chatBot.sendMessage("/exercise", chatId);
         var mes = chatBot.sendMessage("25", chatId);
-        var mes1 = chatBot.sendMessage("0", chatId);
         Assert.assertEquals("Нет такого номера задания", mes);
-        Assert.assertEquals("Нет такого номера задания", mes1);
     }
 
     @Test
