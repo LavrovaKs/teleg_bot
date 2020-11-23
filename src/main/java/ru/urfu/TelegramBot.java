@@ -42,7 +42,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void sendMessage(Message msg, String text) {
 
         SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
         sendMessage.setChatId(msg.getChatId().toString());
         sendMessage.setText(text);
         try {
@@ -52,11 +51,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Метод возвращает имя бота, указанное при регистрации
+     * @return имя бота
+     */
     @Override
     public String getBotUsername() {
         return BOT_NAME;
     }
 
+    /**
+     * Метод возвращает token бота для связи с сервером Telegram
+     * @return token для бота
+     */
     @Override
     public String getBotToken() {
         return BOT_TOKEN;
