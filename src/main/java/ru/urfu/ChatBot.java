@@ -9,36 +9,45 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+/**
+ * Основная логика и функции чат-бота
+ */
 public class ChatBot {
 
-    protected static final String START = "/start";
-    protected static final String HELP = "/help";
-    protected static final String EXERCISE = "/exercise";
-    protected static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
-            "\nсписок доступных команд:\n/help - открыть справку\n/exercise - выбор задания" +
+    private static final String START = "/start";
+    private static final String HELP = "/help";
+    private static final String EXERCISE = "/exercise";
+    private static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
+            "\nсписок доступных команд:" +
+            "\n/help - открыть справку" +
+            "\n/exercise - выбор задания" +
             "\n/time_ex - выполнение задания на время";
-    protected static final String HELP_MESSAGE = "Список доступных команд: \n/help - открыть справку " +
-            "\n/exercise - выбор задания \n/time_ex - выполнение задания на время";
-    protected static final String EXERCISE_MESSAGE = "Введите номер задания";
-    protected static final String NO_COMMAND = "Не уверен, что такая команда мне по силам";
-    protected static final String TRUE_ANSWER = "Правильный ответ!";
-    protected static final String FALSE_ANSWER = "Правильный ответ: ";
-    protected static final String NO_EXERCISE = "Нет такого номера задания";
-    protected static final String TIME_EX = "/time_ex";
-    protected static final String TIME_MESSAGE = "Время выполнения: ";
+    private static final String HELP_MESSAGE = "Список доступных команд: " +
+            "\n/help - открыть справку " +
+            "\n/exercise - выбор задания " +
+            "\n/time_ex - выполнение задания на время";
+    private static final String EXERCISE_MESSAGE = "Введите номер задания";
+    private static final String NO_COMMAND = "Не уверен, что такая команда мне по силам";
+    private static final String TRUE_ANSWER = "Правильный ответ!";
+    private static final String FALSE_ANSWER = "Правильный ответ: ";
+    private static final String NO_EXERCISE = "Нет такого номера задания";
+    private static final String TIME_EX = "/time_ex";
+    private static final String TIME_MESSAGE = "Время выполнения: ";
 
 
-    protected HashMap<String, String> state = new HashMap<>();//ключ - chatId, значение - ответ
+    private final HashMap<String, String> answers = new HashMap<>();//ключ - chatId, значение - ответ
 
-    protected HashMap<String, Context> contexts = new HashMap<>();//ключ - chatId, значение - сщстояние
+    private final HashMap<String, StateManager> statesOfBot = new HashMap<>();
+    //ключ - chatId, значение - переключение состояния
 
-    protected HashMap<String, Date> dates = new HashMap<>();
+    private final HashMap<String, Date> dates = new HashMap<>();
+
 
 
     /**
-     *
-     * @param number - номер задания
-     * @return ответ, задание
+     * Метод по номеру задания находит файл с текстом задания
+     * @param number номер задания
+     * @return пара (ответ, задание)
      */
     public Pair sendExercise(int number) throws IOException {
         if (number > 0 && number < 24) {
@@ -63,49 +72,49 @@ public class ChatBot {
     }
 
     /**
-     *
-     * @param command - сообщение пользователя
-     * @param chatId - ID чата
+     * Метод обрабатывает все поступающие команды
+     * @param command сообщение пользователя
+     * @param chatId ID чата
      * @return ответ
      * @throws IOException exception
      */
 
-    public String sendMessage(String command, String chatId) throws IOException {
-        if(!contexts.containsKey(chatId)){
-            var context = new Context();
+    public String analizeCommand(String command, String chatId) throws IOException {
+        if(!statesOfBot.containsKey(chatId)){
+            var context = new StateManager();
             var waiting = new WaitingMessage();
             waiting.setNext();
             context.setCurrentState(waiting);
-            contexts.put(chatId, context);
+            statesOfBot.put(chatId, context);
         }
         if (command.equals(START))
             return START_MESSAGE;
         if (command.equals(HELP))
             return HELP_MESSAGE;
         if (command.equals(EXERCISE)) {
-            contexts.get(chatId).switchState();
+            statesOfBot.get(chatId).switchState();
             return EXERCISE_MESSAGE;
         }
         if (command.equals(TIME_EX)){
-            contexts.get(chatId).setCurrentState(new Time());
+            statesOfBot.get(chatId).setCurrentState(new Time());
             return EXERCISE_MESSAGE;
         }
-        if((Pattern.matches("-?\\d+", command)) && (contexts.get(chatId).getCurrentState()
-                instanceof WaitingEx || contexts.get(chatId).getCurrentState() instanceof Time)) {
-            if (contexts.get(chatId).getCurrentState() instanceof Time){
+        if((Pattern.matches("-?\\d+", command)) && (statesOfBot.get(chatId).getCurrentState()
+                instanceof WaitingEx || statesOfBot.get(chatId).getCurrentState() instanceof Time)) {
+            if (statesOfBot.get(chatId).getCurrentState() instanceof Time){
                 Date date = new Date();
                 dates.put(chatId, date);
             }
-            contexts.get(chatId).switchState();
+            statesOfBot.get(chatId).switchState();
             var mes = sendExercise(Integer.parseInt(command));
             if (!mes.getAnswer().equals(" "))
-                state.put(chatId, mes.getAnswer());
+                answers.put(chatId, mes.getAnswer());
             return mes.getExercise();
         }
-        if (((contexts.get(chatId)).getCurrentState() instanceof WaitingAnswer) &&
+        if (((statesOfBot.get(chatId)).getCurrentState() instanceof WaitingAnswer) &&
                 (Pattern.matches("-?[0-9a-zA-Z]*", command))){
-            contexts.get(chatId).switchState();
-            var answer = state.remove(chatId);
+            statesOfBot.get(chatId).switchState();
+            var answer = answers.remove(chatId);
             if (dates.containsKey(chatId)){
                 var time = getTime(chatId);
                 if (answer.equals(command))
@@ -117,17 +126,22 @@ public class ChatBot {
             else return FALSE_ANSWER + answer;
         }
         else {
-            if (contexts.get(chatId).getCurrentState() instanceof WaitingAnswer)
-                contexts.get(chatId).switchState();
-            if (contexts.get(chatId).getCurrentState() instanceof WaitingEx
-                    || contexts.get(chatId).getCurrentState() instanceof Time){
-                contexts.get(chatId).switchState();
-                contexts.get(chatId).switchState();
+            if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingAnswer)
+                statesOfBot.get(chatId).switchState();
+            if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingEx
+                    || statesOfBot.get(chatId).getCurrentState() instanceof Time){
+                statesOfBot.get(chatId).switchState();
+                statesOfBot.get(chatId).switchState();
             }
             return NO_COMMAND;
         }
     }
 
+    /**
+     * Метод расчитывает время, затраченное на решение задачи
+     * @param chatId ID чата
+     * @return время затраченное на решение задачи
+     */
     private String getTime(String chatId){
         var start = dates.remove(chatId);
         var end = new Date();

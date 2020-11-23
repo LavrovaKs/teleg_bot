@@ -10,7 +10,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.IOException;
 
-
+/**
+ * Класс отвечает за работу telegram-бота
+ */
 public class TelegramBot extends TelegramLongPollingBot {
 
     private static final String BOT_TOKEN = "1360870382:AAHQiNwIXLcctU6Qb2gUhoja5UWD79lT0K8";
@@ -24,19 +26,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         String txt = message.getText();
         var text = "";
         try {
-            text = chatBot.sendMessage(txt, message.getChatId().toString());
-        } catch (IOException e) {
+            text = chatBot.analizeCommand(txt, message.getChatId().toString());
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
-        sendMsg(message, text);
-        }
+        sendMessage(message, text);
+    }
 
     /**
-     *
-     * @param msg - сообщение пользователя
-     * @param text - текст сообщения
+     * Метода отправляет сообщение в диалоге с telegram-ботом
+     * @param msg сообщение пользователя
+     * @param text текст сообщения
      */
-    private void sendMsg(Message msg, String text) {
+    private void sendMessage(Message msg, String text) {
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
