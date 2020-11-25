@@ -6,11 +6,15 @@ package ru.urfu;
 public class StateManager {
     private State currentState;
 
-    public void setCurrentState(State s){ currentState = s; }
+    public void setCurrentState(State s) {
+        currentState = s;
+    }
 
-    public State getCurrentState(){ return currentState; }
+    public State getCurrentState() {
+        return currentState;
+    }
 
-    public void switchState(){
+    public void switchState() {
         currentState.setNext();
         setCurrentState(currentState.getNext());
     }

@@ -43,13 +43,13 @@ public class ChatBot {
     private final HashMap<String, Date> dates = new HashMap<>();
 
 
-
     /**
      * Метод по номеру задания находит файл с текстом задания
+     *
      * @param number номер задания
      * @return пара (ответ, задание)
      */
-    public Pair sendExercise(int number) throws IOException {
+    public Pair findExercise(int number) throws IOException {
         if (number > 0 && number < 24) {
             var path = String.valueOf(Paths.get("").toAbsolutePath().resolve("src/main/exercises/ex"
                     + number + ".txt"));
@@ -57,7 +57,7 @@ public class ChatBot {
                 String line;
                 StringBuilder ex = new StringBuilder();
                 ArrayList<String> exercise = new ArrayList<>();
-                while ((line = in.readLine()) != null){
+                while ((line = in.readLine()) != null) {
                     exercise.add(line);
                 }
                 var answer = exercise.remove(exercise.size() - 1);
@@ -67,20 +67,20 @@ public class ChatBot {
                 }
                 return new Pair(answer, ex.toString());
             }
-        }
-        else return new Pair(" ", NO_EXERCISE);
+        } else return new Pair(" ", NO_EXERCISE);
     }
 
     /**
      * Метод обрабатывает все поступающие команды
+     *
      * @param command сообщение пользователя
-     * @param chatId ID чата
+     * @param chatId  ID чата
      * @return ответ
      * @throws IOException exception
      */
 
-    public String analizeCommand(String command, String chatId) throws IOException {
-        if(!statesOfBot.containsKey(chatId)){
+    public String analyzeCommand(String command, String chatId) throws IOException {
+        if (!statesOfBot.containsKey(chatId)) {
             var context = new StateManager();
             var waiting = new WaitingMessage();
             waiting.setNext();
@@ -95,27 +95,27 @@ public class ChatBot {
             statesOfBot.get(chatId).switchState();
             return EXERCISE_MESSAGE;
         }
-        if (command.equals(TIME_EX)){
+        if (command.equals(TIME_EX)) {
             statesOfBot.get(chatId).setCurrentState(new Time());
             return EXERCISE_MESSAGE;
         }
-        if((Pattern.matches("-?\\d+", command)) && (statesOfBot.get(chatId).getCurrentState()
+        if ((Pattern.matches("-?\\d+", command)) && (statesOfBot.get(chatId).getCurrentState()
                 instanceof WaitingEx || statesOfBot.get(chatId).getCurrentState() instanceof Time)) {
-            if (statesOfBot.get(chatId).getCurrentState() instanceof Time){
+            if (statesOfBot.get(chatId).getCurrentState() instanceof Time) {
                 Date date = new Date();
                 dates.put(chatId, date);
             }
             statesOfBot.get(chatId).switchState();
-            var mes = sendExercise(Integer.parseInt(command));
+            var mes = findExercise(Integer.parseInt(command));
             if (!mes.getAnswer().equals(" "))
                 answers.put(chatId, mes.getAnswer());
             return mes.getExercise();
         }
         if (((statesOfBot.get(chatId)).getCurrentState() instanceof WaitingAnswer) &&
-                (Pattern.matches("-?[0-9a-zA-Z]*", command))){
+                (Pattern.matches("-?[0-9a-zA-Z]*", command))) {
             statesOfBot.get(chatId).switchState();
             var answer = answers.remove(chatId);
-            if (dates.containsKey(chatId)){
+            if (dates.containsKey(chatId)) {
                 var time = getTime(chatId);
                 if (answer.equals(command))
                     return TRUE_ANSWER + "\n" + TIME_MESSAGE + time + " секунд";
@@ -124,12 +124,11 @@ public class ChatBot {
             if (answer.equals(command))
                 return TRUE_ANSWER;
             else return FALSE_ANSWER + answer;
-        }
-        else {
+        } else {
             if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingAnswer)
                 statesOfBot.get(chatId).switchState();
             if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingEx
-                    || statesOfBot.get(chatId).getCurrentState() instanceof Time){
+                    || statesOfBot.get(chatId).getCurrentState() instanceof Time) {
                 statesOfBot.get(chatId).switchState();
                 statesOfBot.get(chatId).switchState();
             }
@@ -139,13 +138,14 @@ public class ChatBot {
 
     /**
      * Метод расчитывает время, затраченное на решение задачи
+     *
      * @param chatId ID чата
      * @return время затраченное на решение задачи
      */
-    private String getTime(String chatId){
+    private String getTime(String chatId) {
         var start = dates.remove(chatId);
         var end = new Date();
-        var dif = (int)((end.getTime() - start.getTime())/1000);
+        var dif = (int) ((end.getTime() - start.getTime()) / 1000);
         return Integer.toString(dif);
     }
 }

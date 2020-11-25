@@ -20,7 +20,7 @@ public class ConsoleBot {
         while (true) {
             var text = new Scanner(System.in);
             String str = text.nextLine();
-            System.out.println(chatBot.analizeCommand(str, chatId));
+            System.out.println(chatBot.analyzeCommand(str, chatId));
         }
     }
 }

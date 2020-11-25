@@ -3,7 +3,7 @@ package ru.urfu;
 /**
  * Состояние ожидания сообщения
  */
-class WaitingMessage implements State{
+class WaitingMessage implements State {
 
     private State nextState;
 

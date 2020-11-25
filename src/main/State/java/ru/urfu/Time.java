@@ -3,7 +3,7 @@ package ru.urfu;
 /**
  * Состояние ожидания команды /time
  */
-class Time implements State{
+class Time implements State {
 
     private State nextState;
 

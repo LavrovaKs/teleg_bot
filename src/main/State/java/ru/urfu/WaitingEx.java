@@ -3,7 +3,7 @@ package ru.urfu;
 /**
  * Состоягие ожидания команды /exercise
  */
-class WaitingEx implements State{
+class WaitingEx implements State {
 
     private State nextState;
 

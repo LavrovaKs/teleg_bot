@@ -26,9 +26,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         String txt = message.getText();
         var text = "";
         try {
-            text = chatBot.analizeCommand(txt, message.getChatId().toString());
-        }
-        catch (IOException e) {
+            text = chatBot.analyzeCommand(txt, message.getChatId().toString());
+        } catch (IOException e) {
             e.printStackTrace();
         }
         sendMessage(message, text);
@@ -36,7 +35,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * Метода отправляет сообщение в диалоге с telegram-ботом
-     * @param msg сообщение пользователя
+     *
+     * @param msg  сообщение пользователя
      * @param text текст сообщения
      */
     private void sendMessage(Message msg, String text) {
@@ -46,13 +46,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         sendMessage.setText(text);
         try {
             execute(sendMessage);
-        }catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Метод возвращает имя бота, указанное при регистрации
+     *
      * @return имя бота
      */
     @Override
@@ -62,6 +63,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * Метод возвращает token бота для связи с сервером Telegram
+     *
      * @return token для бота
      */
     @Override
