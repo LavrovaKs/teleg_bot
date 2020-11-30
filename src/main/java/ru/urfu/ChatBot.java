@@ -19,6 +19,10 @@ public class ChatBot {
     private static final String START = "/start";
     private static final String HELP = "/help";
     private static final String EXERCISE = "/exercise";
+    private static final String TIME_EX = "/time_ex";
+    private static final String USER_NAME = "/user_name";
+    private static final String MY_NAME = "/my_name";
+    private static final String MY_POINT = "/my_point";
     private static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
             "\nсписок доступных команд:" +
             "\n/help - открыть справку" +
@@ -33,8 +37,9 @@ public class ChatBot {
     private static final String TRUE_ANSWER = "Правильный ответ!";
     private static final String FALSE_ANSWER = "Правильный ответ: ";
     private static final String NO_EXERCISE = "Нет такого номера задания";
-    private static final String TIME_EX = "/time_ex";
+
     private static final String TIME_MESSAGE = "Время выполнения: ";
+    private static final String NAME_MESSAGE = "Введите ваше имя";
 
 
     private final HashMap<String, String> answers = new HashMap<>();//ключ - chatId, значение - ответ
@@ -43,6 +48,9 @@ public class ChatBot {
     //ключ - chatId, значение - переключение состояния
 
     private final HashMap<String, Date> dates = new HashMap<>();
+
+    private final HashMap<String, String> userNames = new HashMap<>(); //ключ - chatId, значение - имя пользователя
+    private final HashMap<String, Integer> points = new HashMap<>(); //ключ - chatId, значение - количество баллов
 
 
     /**
@@ -83,14 +91,33 @@ public class ChatBot {
 
     public String analyzeCommand(String command, String chatId) throws IOException {
         if (!statesOfBot.containsKey(chatId)) {
-            var context = new StateManager();
+            var stateManager = new StateManager();
             var waiting = new WaitingMessage();
             waiting.setNext();
-            context.setCurrentState(waiting);
-            statesOfBot.put(chatId, context);
+            stateManager.setCurrentState(waiting);
+            statesOfBot.put(chatId, stateManager);
         }
+        if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingName){
+            statesOfBot.get(chatId).switchState();
+            userNames.put(chatId, command);
+            return "Приятно познакомиться";
+        }
+        if (command.equals(MY_NAME))
+            return userNames.get(chatId);
+        if (command.equals(MY_POINT))
+            return Integer.toString(points.get(chatId));
         if (command.equals(START))
             return START_MESSAGE;
+        if (command.equals(USER_NAME)) {
+            //здесь плохо, нужно подумать
+            var stateManager = new StateManager();
+            var waiting = new WaitingName();
+            waiting.setNext();
+            stateManager.setCurrentState(waiting);
+            statesOfBot.remove(chatId);
+            statesOfBot.put(chatId, stateManager);
+            return NAME_MESSAGE;
+        }
         if (command.equals(HELP))
             return HELP_MESSAGE;
         if (command.equals(EXERCISE)) {
@@ -103,6 +130,8 @@ public class ChatBot {
         }
         if ((Pattern.matches("-?\\d+", command)) && (statesOfBot.get(chatId).getCurrentState()
                 instanceof WaitingEx || statesOfBot.get(chatId).getCurrentState() instanceof Time)) {
+            if (!points.containsKey(chatId))
+                points.put(chatId, 0);
             if (statesOfBot.get(chatId).getCurrentState() instanceof Time) {
                 Date date = new Date();
                 dates.put(chatId, date);
@@ -119,12 +148,20 @@ public class ChatBot {
             var answer = answers.remove(chatId);
             if (dates.containsKey(chatId)) {
                 var time = getTime(chatId);
-                if (answer.equals(command))
+                if (answer.equals(command)){
+                    //здесь очень плохо
+                    var point = points.remove(chatId) + 1;
+                    points.put(chatId, point);
                     return TRUE_ANSWER + "\n" + TIME_MESSAGE + time + " секунд";
+                }
                 else return FALSE_ANSWER + answer + "\n" + TIME_MESSAGE + time + " секунд";
             }
-            if (answer.equals(command))
+            if (answer.equals(command)) {
+                //здесь очень плохо
+                var point = points.remove(chatId) + 1;
+                points.put(chatId, point);
                 return TRUE_ANSWER;
+            }
             else return FALSE_ANSWER + answer;
         } else {
             if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingAnswer)
