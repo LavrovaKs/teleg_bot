@@ -1,9 +1,10 @@
-package ru.urfu;
+package ru.state;
+
 
 /**
  * Состояние ожидания ответа на задания
  */
-class WaitingAnswer implements State {
+public class WaitingAnswer implements State {
 
     private State nextState;
 

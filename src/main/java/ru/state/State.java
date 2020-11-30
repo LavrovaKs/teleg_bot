@@ -1,4 +1,4 @@
-package ru.urfu;
+package ru.state;
 
 public interface State {
     void setNext();

@@ -1,9 +1,10 @@
-package ru.urfu;
+package ru.state;
+
 
 /**
  * Состояние ожидания сообщения
  */
-class WaitingMessage implements State {
+public class WaitingMessage implements State {
 
     private State nextState;
 

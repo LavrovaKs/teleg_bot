@@ -1,4 +1,6 @@
-package ru.urfu;
+package ru.state;
+
+import ru.state.State;
 
 /**
  * Класс отвечает за текущее состояние и его переключение

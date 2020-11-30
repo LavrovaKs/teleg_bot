@@ -1,9 +1,12 @@
-package ru.urfu;
+package ru.state;
+
+import ru.state.State;
+import ru.state.WaitingAnswer;
 
 /**
  * Состоягие ожидания команды /exercise
  */
-class WaitingEx implements State {
+public class WaitingEx implements State {
 
     private State nextState;
 

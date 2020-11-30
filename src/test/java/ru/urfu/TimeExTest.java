@@ -123,7 +123,7 @@ public class TimeExTest {
     public void timeTest() throws IOException, InterruptedException {
         chatBot.analyzeCommand("5", chatId);
         var start = new Date();
-        Thread.sleep(5000);
+        Thread.sleep(2000);
         var actual = chatBot.analyzeCommand(sendExercise().getAnswer(), chatId);
         var end = new Date();
         var dif = (int) ((end.getTime() - start.getTime()) / 1000);

@@ -1,9 +1,10 @@
-package ru.urfu;
+package ru.state;
+
 
 /**
  * Состояние ожидания команды /time
  */
-class Time implements State {
+public class Time implements State {
 
     private State nextState;
 
