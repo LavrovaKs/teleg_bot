@@ -25,7 +25,7 @@ public class ChatBot {
     private static final String MY_POINT = "/my_point";
 
     private static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
-            "\nсписок доступных команд:\uD83D\uDE09" +
+            "\nсписок доступных команд:" +
             "\n/help - открыть справку" +
             "\n/exercise - выбор задания" +
             "\n/time_ex - выполнение задания на время" +
@@ -33,7 +33,7 @@ public class ChatBot {
             "\n/my_point - посмотреть количество набранных баллов";
     private static final String HELP_MESSAGE = "Список доступных команд: " +
             "\n/help - открыть справку " +
-            "\n/exercise - выбор задания\uD83D\uDE28 " +
+            "\n/exercise - выбор задания " +
             "\n/time_ex - выполнение задания на время" +
             "\n/user_name - зарегистрировать свое имя" +
             "\n/my_point - посмотреть количество набранных баллов";
