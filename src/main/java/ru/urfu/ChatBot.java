@@ -23,6 +23,7 @@ public class ChatBot {
     private static final String USER_NAME = "/user_name";
     private static final String MY_NAME = "/my_name"; //только для отладки
     private static final String MY_POINT = "/my_point";
+    private static final String MISTAKE = "/mistake";
 
     private static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
             "\nсписок доступных команд:" +
