@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -24,6 +25,7 @@ public class ChatBot {
     private static final String MY_NAME = "/my_name"; //только для отладки
     private static final String MY_POINT = "/my_point";
     private static final String MISTAKE = "/mistake";
+    private static final String TOP = "/top";
 
     private static final String START_MESSAGE = "Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
             "\nсписок доступных команд:" +
@@ -137,6 +139,8 @@ public class ChatBot {
             statesOfBot.get(chatId).setCurrentState(new Time());
             return EXERCISE_MESSAGE;
         }
+        if (command.equals(TOP))
+            return getTop();
         if (command.equals(MISTAKE))
             return getMistake(chatId);
         if ((Pattern.matches("-?\\d+", command)) && (statesOfBot.get(chatId).getCurrentState()
@@ -234,5 +238,35 @@ public class ChatBot {
                 "\n" + Topic.valueOf("ALGO") + " - " + mistakes.get(chatId).algo +
                 "\n" + Topic.valueOf("GAME") + " - " + mistakes.get(chatId).game +
                 "\n" + Topic.valueOf("PROGRAM") + " - " + mistakes.get(chatId).program;
+    }
+
+    /**
+     //     * Метод составляет топ пользователей
+     //     * @return топ
+     //     */
+    private String getTop(){
+        var maxValue1 = 0;
+        var maxKey1 = " ";
+        var maxValue2 = 0;
+        var maxKey2 = " ";
+        var maxValue3 = 0;
+        var maxKey3 = " ";
+        for (Map.Entry<String, Integer> point : points.entrySet()) {
+            if (point.getValue() > maxValue1){
+                maxValue1 = point.getValue();
+                maxKey1 = point.getKey();
+            }
+            if (point.getValue() <= maxValue1 && point.getValue() > maxValue2){
+                maxValue2 = point.getValue();
+                maxKey2 = point.getKey();
+            }
+            if (point.getValue() <= maxValue2 && point.getValue() > maxValue3){
+                maxValue3 = point.getValue();
+                maxKey3 = point.getKey();
+            }
+        }
+        return "1." + userNames.get(maxKey1) + "-" + maxValue1 +
+                "\n2." + userNames.get(maxKey2) + "-" + maxValue2 +
+                "\n3." + userNames.get(maxKey3) + "-" + maxValue3;
     }
 }
