@@ -59,7 +59,7 @@ public class ChatBot {
 
     private final HashMap<String, String> userNames = new HashMap<>(); //ключ - chatId, значение - имя пользователя
     private final HashMap<String, Integer> points = new HashMap<>(); //ключ - chatId, значение - количество баллов
-
+    private final HashMap<String, ListTopic> mistakes = new HashMap<>(); //ключ - chatId, значение - список тем и ошибок
 
     /**
      * Метод по номеру задания находит файл с текстом задания
@@ -190,5 +190,11 @@ public class ChatBot {
         var end = new Date();
         var dif = (int) ((end.getTime() - start.getTime()) / 1000);
         return Integer.toString(dif);
+    }
+
+    private void analyzeMistake(String chatId, String ex){
+        if (ex.equals("1") || ex.equals("3") || ex.equals("9") || ex.equals("10") || ex.equals("13")){
+            mistakes.get(chatId).user = mistakes.get(chatId).user + 1;
+            mistakes.put(chatId, mistakes.get(chatId));
     }
 }
