@@ -19,4 +19,9 @@ enum Topic {
     public String getTopic(){
         return exercise;
     }
+
+    @Override
+    public String toString(){
+        return exercise;
+    }
 }

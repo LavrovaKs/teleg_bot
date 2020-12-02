@@ -56,7 +56,7 @@ public class ChatBot {
     //ключ - chatId, значение - переключение состояния
 
     private final HashMap<String, Date> dates = new HashMap<>();
-
+    private final HashMap<String, String> exercises = new HashMap<>();
     private final HashMap<String, String> userNames = new HashMap<>(); //ключ - chatId, значение - имя пользователя
     private final HashMap<String, Integer> points = new HashMap<>(); //ключ - chatId, значение - количество баллов
     private final HashMap<String, ListTopic> mistakes = new HashMap<>(); //ключ - chatId, значение - список тем и ошибок
@@ -105,6 +105,7 @@ public class ChatBot {
             stateManager.setCurrentState(waiting);
             statesOfBot.put(chatId, stateManager);
             points.put(chatId, 0);
+            mistakes.put(chatId, new ListTopic());
         }
         if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingName){
             statesOfBot.get(chatId).switchState();
@@ -136,8 +137,11 @@ public class ChatBot {
             statesOfBot.get(chatId).setCurrentState(new Time());
             return EXERCISE_MESSAGE;
         }
+        if (command.equals(MISTAKE))
+            return getMistake(chatId);
         if ((Pattern.matches("-?\\d+", command)) && (statesOfBot.get(chatId).getCurrentState()
                 instanceof WaitingEx || statesOfBot.get(chatId).getCurrentState() instanceof Time)) {
+            exercises.put(chatId, command);
             if (!points.containsKey(chatId))
                 points.put(chatId, 0);
             if (statesOfBot.get(chatId).getCurrentState() instanceof Time) {
@@ -158,15 +162,23 @@ public class ChatBot {
                 var time = getTime(chatId);
                 if (answer.equals(command)){
                     points.put(chatId ,points.get(chatId) + 1);
+                    exercises.remove(chatId);
                     return TRUE_ANSWER + "\n" + TIME_MESSAGE + time + " секунд";
                 }
-                else return FALSE_ANSWER + answer + "\n" + TIME_MESSAGE + time + " секунд";
+                else{
+                    analyzeMistake(chatId, exercises.remove(chatId));
+                    return FALSE_ANSWER + answer + "\n" + TIME_MESSAGE + time + " секунд";
+                }
             }
             if (answer.equals(command)) {
                 points.put(chatId ,points.get(chatId) + 1);
+                exercises.remove(chatId);
                 return TRUE_ANSWER;
             }
-            else return FALSE_ANSWER + answer;
+            else{
+                analyzeMistake(chatId, exercises.remove(chatId));
+                return FALSE_ANSWER + answer;
+            }
         } else {
             if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingAnswer)
                 statesOfBot.get(chatId).switchState();
@@ -196,5 +208,31 @@ public class ChatBot {
         if (ex.equals("1") || ex.equals("3") || ex.equals("9") || ex.equals("10") || ex.equals("13")){
             mistakes.get(chatId).user = mistakes.get(chatId).user + 1;
             mistakes.put(chatId, mistakes.get(chatId));
+        }
+        if (ex.equals("4") || ex.equals("7") || ex.equals("8") || ex.equals("11")){
+            mistakes.get(chatId).info = mistakes.get(chatId).info + 1;
+            //mistakes.put(chatId, mistakes.get(chatId));
+        }
+        if (ex.equals("14")){
+            mistakes.get(chatId).systems = mistakes.get(chatId).systems + 1;
+        }
+        if (ex.equals("2") || ex.equals("15"))
+            mistakes.get(chatId).logics = mistakes.get(chatId).logics + 1;
+        if (ex.equals("5") || ex.equals("12") || ex.equals("16") || ex.equals("18"))
+            mistakes.get(chatId).algo = mistakes.get(chatId).algo + 1;
+        if (ex.equals("19") || ex.equals("20") || ex.equals("21"))
+            mistakes.get(chatId).game = mistakes.get(chatId).game + 1;
+        if (ex.equals("6") || ex.equals("17") || ex.equals("22") || ex.equals("23"))
+            mistakes.get(chatId).program = mistakes.get(chatId).program + 1;
+    }
+    private String getMistake(String chatId){
+        return "Ваши ошибки:" +
+                "\n" + Topic.valueOf("INFO") + " - " + mistakes.get(chatId).info +
+                "\n" + Topic.valueOf("SYSTEMS") + " - " + mistakes.get(chatId).systems +
+                "\n" + Topic.valueOf("LOGICS") + " - " + mistakes.get(chatId).logics +
+                "\n" + Topic.valueOf("USER") + " - " + mistakes.get(chatId).user +
+                "\n" + Topic.valueOf("ALGO") + " - " + mistakes.get(chatId).algo +
+                "\n" + Topic.valueOf("GAME") + " - " + mistakes.get(chatId).game +
+                "\n" + Topic.valueOf("PROGRAM") + " - " + mistakes.get(chatId).program;
     }
 }
