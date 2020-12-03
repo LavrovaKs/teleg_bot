@@ -29,7 +29,10 @@ public class ChatBotCommandTest {
                 "\n/exercise - выбор задания" +
                 "\n/time_ex - выполнение задания на время" +
                 "\n/user_name - зарегистрировать свое имя" +
-                "\n/my_point - посмотреть количество набранных баллов", mes);
+                "\n/my_point - посмотреть количество набранных баллов" +
+                "\n/my_name - посмотреть свое имя" +
+                "\n/mistake - анализ частых ошибок по темам" +
+                "\n/top - вывод лидеров рейтинга", mes);
     }
 
     /**
@@ -39,11 +42,14 @@ public class ChatBotCommandTest {
     public void helpTest() throws IOException {
         var mes = chatBot.analyzeCommand("/help", chatId);
         Assert.assertEquals("Список доступных команд: " +
-                "\n/help - открыть справку " +
-                "\n/exercise - выбор задания " +
+                "\n/help - открыть справку" +
+                "\n/exercise - выбор задания" +
                 "\n/time_ex - выполнение задания на время" +
                 "\n/user_name - зарегистрировать свое имя" +
-                "\n/my_point - посмотреть количество набранных баллов", mes);
+                "\n/my_point - посмотреть количество набранных баллов" +
+                "\n/my_name - посмотреть свое имя" +
+                "\n/mistake - анализ частых ошибок по темам" +
+                "\n/top - вывод лидеров рейтинга", mes);
     }
 
     /**

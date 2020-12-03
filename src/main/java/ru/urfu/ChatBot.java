@@ -22,7 +22,7 @@ public class ChatBot {
     private static final String EXERCISE = "/exercise";
     private static final String TIME_EX = "/time_ex";
     private static final String USER_NAME = "/user_name";
-    private static final String MY_NAME = "/my_name"; //только для отладки
+    private static final String MY_NAME = "/my_name";
     private static final String MY_POINT = "/my_point";
     private static final String MISTAKE = "/mistake";
     private static final String TOP = "/top";
@@ -33,13 +33,19 @@ public class ChatBot {
             "\n/exercise - выбор задания" +
             "\n/time_ex - выполнение задания на время" +
             "\n/user_name - зарегистрировать свое имя" +
-            "\n/my_point - посмотреть количество набранных баллов";
+            "\n/my_point - посмотреть количество набранных баллов" +
+            "\n/my_name - посмотреть свое имя" +
+            "\n/mistake - анализ частых ошибок по темам" +
+            "\n/top - вывод лидеров рейтинга";
     private static final String HELP_MESSAGE = "Список доступных команд: " +
-            "\n/help - открыть справку " +
-            "\n/exercise - выбор задания " +
+            "\n/help - открыть справку" +
+            "\n/exercise - выбор задания" +
             "\n/time_ex - выполнение задания на время" +
             "\n/user_name - зарегистрировать свое имя" +
-            "\n/my_point - посмотреть количество набранных баллов";
+            "\n/my_point - посмотреть количество набранных баллов" +
+            "\n/my_name - посмотреть свое имя" +
+            "\n/mistake - анализ частых ошибок по темам" +
+            "\n/top - вывод лидеров рейтинга";
 
     private static final String EXERCISE_MESSAGE = "Введите номер задания";
     private static final String NO_COMMAND = "Не уверен, что такая команда мне по силам";
