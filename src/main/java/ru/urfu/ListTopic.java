@@ -1,5 +1,8 @@
 package ru.urfu;
 
+/**
+ * Подсчет ошибок в темах
+ */
 public class ListTopic {
 
     public int info = 0;
