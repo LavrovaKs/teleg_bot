@@ -277,9 +277,8 @@ public class ChatBot {
     }
 
     /**
-     * //     * Метод составляет топ пользователей
-     * //     * @return топ
-     * //
+     * Метод составляет топ пользователей
+     * @return  топ
      */
     private String getTop() {
         var maxValue1 = 0;
