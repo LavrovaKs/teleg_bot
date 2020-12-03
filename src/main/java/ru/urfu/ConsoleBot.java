@@ -12,6 +12,7 @@ public class ConsoleBot {
 
     /**
      * Описание работы бота в консоли
+     *
      * @param chatBot экземпляр класса ChatBot
      * @throws IOException исключение
      */
@@ -20,7 +21,11 @@ public class ConsoleBot {
         while (true) {
             var text = new Scanner(System.in);
             String str = text.nextLine();
-            System.out.println(chatBot.analyzeCommand(str, chatId));
+            if (str.equals("/chat")) {
+                var text1 = new Scanner(System.in);
+                chatId = text1.nextLine();
+            } else
+                System.out.println(chatBot.analyzeCommand(str, chatId));
         }
     }
 }
