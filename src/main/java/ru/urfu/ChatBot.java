@@ -109,7 +109,7 @@ public class ChatBot {
             points.put(chatId, 0);
             mistakes.put(chatId, new ListTopic());
         }
-        if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingName){
+        if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingName) {
             statesOfBot.get(chatId).switchState();
             userNames.put(chatId, command);
             return WELCOME_MESSAGE;
@@ -126,7 +126,7 @@ public class ChatBot {
             statesOfBot.get(chatId).setCurrentState(waiting);
             return NAME_MESSAGE;
         }
-        if (command.equals(MY_NAME)){
+        if (command.equals(MY_NAME)) {
             if (!userNames.containsKey(chatId))
                 return NO_NAME;
             return userNames.get(chatId);
@@ -164,22 +164,20 @@ public class ChatBot {
             var answer = answers.remove(chatId);
             if (dates.containsKey(chatId)) {
                 var time = getTime(chatId);
-                if (answer.equals(command)){
-                    points.put(chatId ,points.get(chatId) + 1);
+                if (answer.equals(command)) {
+                    points.put(chatId, points.get(chatId) + 1);
                     exercises.remove(chatId);
                     return TRUE_ANSWER + "\n" + TIME_MESSAGE + time + " секунд";
-                }
-                else{
+                } else {
                     analyzeMistake(chatId, exercises.remove(chatId));
                     return FALSE_ANSWER + answer + "\n" + TIME_MESSAGE + time + " секунд";
                 }
             }
             if (answer.equals(command)) {
-                points.put(chatId ,points.get(chatId) + 1);
+                points.put(chatId, points.get(chatId) + 1);
                 exercises.remove(chatId);
                 return TRUE_ANSWER;
-            }
-            else{
+            } else {
                 analyzeMistake(chatId, exercises.remove(chatId));
                 return FALSE_ANSWER + answer;
             }
@@ -208,18 +206,19 @@ public class ChatBot {
         return Integer.toString(dif);
     }
 
-    private void analyzeMistake(String chatId, String ex){
-        if (ex.equals("1") || ex.equals("3") || ex.equals("9") || ex.equals("10") || ex.equals("13")){
+    /**
+     * Метод анализирует ошибки
+     *
+     * @param chatId ID чата
+     * @param ex     номер задания
+     */
+    private void analyzeMistake(String chatId, String ex) {
+        if (ex.equals("1") || ex.equals("3") || ex.equals("9") || ex.equals("10") || ex.equals("13"))
             mistakes.get(chatId).user = mistakes.get(chatId).user + 1;
-            mistakes.put(chatId, mistakes.get(chatId));
-        }
-        if (ex.equals("4") || ex.equals("7") || ex.equals("8") || ex.equals("11")){
+        if (ex.equals("4") || ex.equals("7") || ex.equals("8") || ex.equals("11"))
             mistakes.get(chatId).info = mistakes.get(chatId).info + 1;
-            //mistakes.put(chatId, mistakes.get(chatId));
-        }
-        if (ex.equals("14")){
+        if (ex.equals("14"))
             mistakes.get(chatId).systems = mistakes.get(chatId).systems + 1;
-        }
         if (ex.equals("2") || ex.equals("15"))
             mistakes.get(chatId).logics = mistakes.get(chatId).logics + 1;
         if (ex.equals("5") || ex.equals("12") || ex.equals("16") || ex.equals("18"))
@@ -229,7 +228,44 @@ public class ChatBot {
         if (ex.equals("6") || ex.equals("17") || ex.equals("22") || ex.equals("23"))
             mistakes.get(chatId).program = mistakes.get(chatId).program + 1;
     }
-    private String getMistake(String chatId){
+
+    /**
+     * Метод выводит список всех ошибок
+     *
+     * @param chatId ID чата
+     * @return список ошибок
+     */
+    private String getMistake(String chatId) {
+        var message = new StringBuilder();
+        message.append("\nВам нужно повторить:");
+        if (mistakes.get(chatId).info > 0) {
+            message.append(" ");
+            message.append(Topic.valueOf("INFO"));
+        }
+        if (mistakes.get(chatId).systems > 0) {
+            message.append(" ");
+            message.append(Topic.valueOf("SYSTEMS"));
+        }
+        if (mistakes.get(chatId).logics > 0) {
+            message.append(" ");
+            message.append(Topic.valueOf("LOGICS"));
+        }
+        if (mistakes.get(chatId).user > 0) {
+            message.append(" ");
+            message.append(Topic.valueOf("USER"));
+        }
+        if (mistakes.get(chatId).algo > 0) {
+            message.append(" ");
+            message.append(Topic.valueOf("ALGO"));
+        }
+        if (mistakes.get(chatId).game > 0) {
+            message.append(" ");
+            message.append(Topic.valueOf("GAME"));
+        }
+        if (mistakes.get(chatId).program > 0) {
+            message.append(" ");
+            message.append(Topic.valueOf("PROGRAM"));
+        }
         return "Ваши ошибки:" +
                 "\n" + Topic.valueOf("INFO") + " - " + mistakes.get(chatId).info +
                 "\n" + Topic.valueOf("SYSTEMS") + " - " + mistakes.get(chatId).systems +
@@ -237,14 +273,15 @@ public class ChatBot {
                 "\n" + Topic.valueOf("USER") + " - " + mistakes.get(chatId).user +
                 "\n" + Topic.valueOf("ALGO") + " - " + mistakes.get(chatId).algo +
                 "\n" + Topic.valueOf("GAME") + " - " + mistakes.get(chatId).game +
-                "\n" + Topic.valueOf("PROGRAM") + " - " + mistakes.get(chatId).program;
+                "\n" + Topic.valueOf("PROGRAM") + " - " + mistakes.get(chatId).program + message;
     }
 
     /**
-     //     * Метод составляет топ пользователей
-     //     * @return топ
-     //     */
-    private String getTop(){
+     * //     * Метод составляет топ пользователей
+     * //     * @return топ
+     * //
+     */
+    private String getTop() {
         var maxValue1 = 0;
         var maxKey1 = " ";
         var maxValue2 = 0;
@@ -252,21 +289,25 @@ public class ChatBot {
         var maxValue3 = 0;
         var maxKey3 = " ";
         for (Map.Entry<String, Integer> point : points.entrySet()) {
-            if (point.getValue() > maxValue1){
+            if (point.getValue() > maxValue1) {
                 maxValue1 = point.getValue();
                 maxKey1 = point.getKey();
             }
-            if (point.getValue() <= maxValue1 && point.getValue() > maxValue2){
+        }
+        for (Map.Entry<String, Integer> point : points.entrySet()) {
+            if (point.getValue() >= maxValue2 && !point.getKey().equals(maxKey1)) {
                 maxValue2 = point.getValue();
                 maxKey2 = point.getKey();
             }
-            if (point.getValue() <= maxValue2 && point.getValue() > maxValue3){
+        }
+        for (Map.Entry<String, Integer> point : points.entrySet()) {
+            if (point.getValue() > maxValue3 && !point.getKey().equals(maxKey1) && !point.getKey().equals(maxKey2)) {
                 maxValue3 = point.getValue();
                 maxKey3 = point.getKey();
             }
         }
-        return "1." + userNames.get(maxKey1) + "-" + maxValue1 +
-                "\n2." + userNames.get(maxKey2) + "-" + maxValue2 +
-                "\n3." + userNames.get(maxKey3) + "-" + maxValue3;
+        return "1." + userNames.get(maxKey1) + " - " + maxValue1 +
+                "\n2." + userNames.get(maxKey2) + " - " + maxValue2 +
+                "\n3." + userNames.get(maxKey3) + " - " + maxValue3;
     }
 }

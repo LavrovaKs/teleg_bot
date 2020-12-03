@@ -37,10 +37,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         sendMessage(message, text);
     }
+
     /**
      * Метод отвечает за работу кнопок в самом Telegramm
      */
-    public void setButton(SendMessage sendMessage){
+    public void setButton(SendMessage sendMessage) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         replyKeyboardMarkup.setSelective(true);
@@ -54,10 +55,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         keyboardRow_1.add(new KeyboardButton("/help"));
         keyboardRow_1.add(new KeyboardButton("/start"));
         keyboardRow_1.add(new KeyboardButton("/exercise"));
-        keyboardRow_2.add(new  KeyboardButton("/time_ex"));
-        keyboardRow_2.add(new  KeyboardButton("/my_point"));
-        keyboardRow_2.add(new  KeyboardButton("/top"));
-        keyboardRow_2.add(new  KeyboardButton("/mistake"));
+        keyboardRow_2.add(new KeyboardButton("/time_ex"));
+        keyboardRow_2.add(new KeyboardButton("/my_point"));
+        keyboardRow_2.add(new KeyboardButton("/top"));
+        keyboardRow_2.add(new KeyboardButton("/mistake"));
 
         keyboardRowList.add(keyboardRow_1);
         keyboardRowList.add(keyboardRow_2);
