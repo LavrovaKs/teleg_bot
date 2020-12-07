@@ -148,7 +148,7 @@ public class ChatBot {
         if (command.equals(TOP))
             return getTop();
         if (command.equals(MISTAKE))
-            return getMistake(chatId);
+            return mistakes.get(chatId).getMistake();
         if ((Pattern.matches("-?\\d+", command)) && (statesOfBot.get(chatId).getCurrentState()
                 instanceof WaitingEx || statesOfBot.get(chatId).getCurrentState() instanceof Time)) {
             exercises.put(chatId, command);
@@ -175,7 +175,7 @@ public class ChatBot {
                     exercises.remove(chatId);
                     return TRUE_ANSWER + "\n" + TIME_MESSAGE + time + " секунд";
                 } else {
-                    analyzeMistake(chatId, exercises.remove(chatId));
+                    mistakes.get(chatId).analyzeMistake(exercises.remove(chatId));
                     return FALSE_ANSWER + answer + "\n" + TIME_MESSAGE + time + " секунд";
                 }
             }
@@ -184,7 +184,7 @@ public class ChatBot {
                 exercises.remove(chatId);
                 return TRUE_ANSWER;
             } else {
-                analyzeMistake(chatId, exercises.remove(chatId));
+                mistakes.get(chatId).analyzeMistake(exercises.remove(chatId));
                 return FALSE_ANSWER + answer;
             }
         } else {
@@ -210,76 +210,6 @@ public class ChatBot {
         var end = new Date();
         var dif = (int) ((end.getTime() - start.getTime()) / 1000);
         return Integer.toString(dif);
-    }
-
-    /**
-     * Метод анализирует ошибки
-     *
-     * @param chatId ID чата
-     * @param ex     номер задания
-     */
-    private void analyzeMistake(String chatId, String ex) {
-        if (ex.equals("1") || ex.equals("3") || ex.equals("9") || ex.equals("10") || ex.equals("13"))
-            mistakes.get(chatId).user = mistakes.get(chatId).user + 1;
-        if (ex.equals("4") || ex.equals("7") || ex.equals("8") || ex.equals("11"))
-            mistakes.get(chatId).info = mistakes.get(chatId).info + 1;
-        if (ex.equals("14"))
-            mistakes.get(chatId).systems = mistakes.get(chatId).systems + 1;
-        if (ex.equals("2") || ex.equals("15"))
-            mistakes.get(chatId).logics = mistakes.get(chatId).logics + 1;
-        if (ex.equals("5") || ex.equals("12") || ex.equals("16") || ex.equals("18"))
-            mistakes.get(chatId).algo = mistakes.get(chatId).algo + 1;
-        if (ex.equals("19") || ex.equals("20") || ex.equals("21"))
-            mistakes.get(chatId).game = mistakes.get(chatId).game + 1;
-        if (ex.equals("6") || ex.equals("17") || ex.equals("22") || ex.equals("23"))
-            mistakes.get(chatId).program = mistakes.get(chatId).program + 1;
-    }
-
-    /**
-     * Метод выводит список всех ошибок
-     *
-     * @param chatId ID чата
-     * @return список ошибок
-     */
-    private String getMistake(String chatId) {
-        var message = new StringBuilder();
-        message.append("\nВам нужно повторить:");
-        if (mistakes.get(chatId).info > 0) {
-            message.append(" ");
-            message.append(Topic.valueOf("INFO"));
-        }
-        if (mistakes.get(chatId).systems > 0) {
-            message.append(" ");
-            message.append(Topic.valueOf("SYSTEMS"));
-        }
-        if (mistakes.get(chatId).logics > 0) {
-            message.append(" ");
-            message.append(Topic.valueOf("LOGICS"));
-        }
-        if (mistakes.get(chatId).user > 0) {
-            message.append(" ");
-            message.append(Topic.valueOf("USER"));
-        }
-        if (mistakes.get(chatId).algo > 0) {
-            message.append(" ");
-            message.append(Topic.valueOf("ALGO"));
-        }
-        if (mistakes.get(chatId).game > 0) {
-            message.append(" ");
-            message.append(Topic.valueOf("GAME"));
-        }
-        if (mistakes.get(chatId).program > 0) {
-            message.append(" ");
-            message.append(Topic.valueOf("PROGRAM"));
-        }
-        return "Ваши ошибки:" +
-                "\n" + Topic.valueOf("INFO") + " - " + mistakes.get(chatId).info +
-                "\n" + Topic.valueOf("SYSTEMS") + " - " + mistakes.get(chatId).systems +
-                "\n" + Topic.valueOf("LOGICS") + " - " + mistakes.get(chatId).logics +
-                "\n" + Topic.valueOf("USER") + " - " + mistakes.get(chatId).user +
-                "\n" + Topic.valueOf("ALGO") + " - " + mistakes.get(chatId).algo +
-                "\n" + Topic.valueOf("GAME") + " - " + mistakes.get(chatId).game +
-                "\n" + Topic.valueOf("PROGRAM") + " - " + mistakes.get(chatId).program + message;
     }
 
     /**
