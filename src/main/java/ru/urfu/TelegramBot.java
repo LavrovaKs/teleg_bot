@@ -29,9 +29,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         String txt = message.getText();
+        var user = message.getChat().getLastName() + " " +  message.getChat().getFirstName();
         var text = "";
         try {
-            text = chatBot.analyzeCommand(txt, message.getChatId().toString());
+            text = chatBot.analyzeCommand(txt, message.getChatId().toString(), user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,9 +109,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
-        TelegramBotsApi botapi = new TelegramBotsApi();
+        TelegramBotsApi botApi = new TelegramBotsApi();
         try {
-            botapi.registerBot(new TelegramBot());
+            botApi.registerBot(new TelegramBot());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

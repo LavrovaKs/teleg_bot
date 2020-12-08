@@ -8,7 +8,8 @@ import java.util.Scanner;
  */
 public class ConsoleBot {
 
-    String chatId = "123";
+    private String chatId = "123";
+    private String user_name = "First";
 
     /**
      * Описание работы бота в консоли
@@ -24,8 +25,12 @@ public class ConsoleBot {
             if (str.equals("/chat")) {
                 var text1 = new Scanner(System.in);
                 chatId = text1.nextLine();
-            } else
-                System.out.println(chatBot.analyzeCommand(str, chatId));
+                System.out.println("Введите ваше имя");
+                var text2 = new Scanner(System.in);
+                user_name = text2.nextLine();
+            }
+            else
+                System.out.println(chatBot.analyzeCommand(str, chatId, user_name));
         }
     }
 }

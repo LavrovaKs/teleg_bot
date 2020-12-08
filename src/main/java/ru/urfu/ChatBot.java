@@ -21,8 +21,6 @@ public class ChatBot {
     private static final String HELP = "/help";
     private static final String EXERCISE = "/exercise";
     private static final String TIME_EX = "/time_ex";
-    private static final String USER_NAME = "/user_name";
-    private static final String MY_NAME = "/my_name";
     private static final String MY_POINT = "/my_point";
     private static final String MISTAKE = "/mistake";
     private static final String TOP = "/top";
@@ -32,29 +30,23 @@ public class ChatBot {
             "\n/help - открыть справку" +
             "\n/exercise - выбор задания" +
             "\n/time_ex - выполнение задания на время" +
-            "\n/user_name - зарегистрировать свое имя" +
             "\n/my_point - посмотреть количество набранных баллов" +
-            "\n/my_name - посмотреть свое имя" +
             "\n/mistake - анализ частых ошибок по темам" +
             "\n/top - вывод лидеров рейтинга";
     private static final String HELP_MESSAGE = "Список доступных команд: " +
             "\n/help - открыть справку" +
             "\n/exercise - выбор задания" +
             "\n/time_ex - выполнение задания на время" +
-            "\n/user_name - зарегистрировать свое имя" +
             "\n/my_point - посмотреть количество набранных баллов" +
-            "\n/my_name - посмотреть свое имя" +
             "\n/mistake - анализ частых ошибок по темам" +
             "\n/top - вывод лидеров рейтинга";
 
     private static final String EXERCISE_MESSAGE = "Введите номер задания";
     private static final String NO_COMMAND = "Не уверен, что такая команда мне по силам";
     private static final String NO_EXERCISE = "Нет такого номера задания";
-    private static final String NO_NAME = "Вы еще не зарегистрировались";
     private static final String TRUE_ANSWER = "Правильный ответ!";
     private static final String FALSE_ANSWER = "Правильный ответ: ";
     private static final String TIME_MESSAGE = "Время выполнения: ";
-    private static final String NAME_MESSAGE = "Введите ваше имя";
     private static final String WELCOME_MESSAGE = "Приятно познакомиться";
 
 
@@ -105,7 +97,7 @@ public class ChatBot {
      * @throws IOException exception
      */
 
-    public String analyzeCommand(String command, String chatId) throws IOException {
+    public String analyzeCommand(String command, String chatId, String userName) throws IOException {
         if (!statesOfBot.containsKey(chatId)) {
             var stateManager = new StateManager();
             var waiting = new WaitingMessage();
@@ -114,6 +106,7 @@ public class ChatBot {
             statesOfBot.put(chatId, stateManager);
             points.put(chatId, 0);
             mistakes.put(chatId, new ListTopic());
+            userNames.put(chatId, userName);
         }
         if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingName) {
             statesOfBot.get(chatId).switchState();
@@ -126,17 +119,6 @@ public class ChatBot {
             return START_MESSAGE;
         if (command.equals(HELP))
             return HELP_MESSAGE;
-        if (command.equals(USER_NAME)) {
-            var waiting = new WaitingName();
-            waiting.setNext();
-            statesOfBot.get(chatId).setCurrentState(waiting);
-            return NAME_MESSAGE;
-        }
-        if (command.equals(MY_NAME)) {
-            if (!userNames.containsKey(chatId))
-                return NO_NAME;
-            return userNames.get(chatId);
-        }
         if (command.equals(EXERCISE)) {
             statesOfBot.get(chatId).switchState();
             return EXERCISE_MESSAGE;
@@ -223,26 +205,31 @@ public class ChatBot {
         var maxKey2 = " ";
         var maxValue3 = 0;
         var maxKey3 = " ";
+        var top = "";
         for (Map.Entry<String, Integer> point : points.entrySet()) {
             if (point.getValue() > maxValue1) {
                 maxValue1 = point.getValue();
                 maxKey1 = point.getKey();
             }
         }
+        top = "1." + userNames.get(maxKey1) + " - " + maxValue1;
         for (Map.Entry<String, Integer> point : points.entrySet()) {
             if (point.getValue() >= maxValue2 && !point.getKey().equals(maxKey1)) {
                 maxValue2 = point.getValue();
                 maxKey2 = point.getKey();
             }
         }
-        for (Map.Entry<String, Integer> point : points.entrySet()) {
-            if (point.getValue() > maxValue3 && !point.getKey().equals(maxKey1) && !point.getKey().equals(maxKey2)) {
-                maxValue3 = point.getValue();
-                maxKey3 = point.getKey();
+        if (userNames.get(maxKey2) != null)
+            top = top + "\n2." + userNames.get(maxKey2) + " - " + maxValue2;
+            for (Map.Entry<String, Integer> point : points.entrySet()) {
+                if (point.getValue() > maxValue3 && !point.getKey().equals(maxKey1)
+                        && !point.getKey().equals(maxKey2)) {
+                    maxValue3 = point.getValue();
+                    maxKey3 = point.getKey();
+                }
             }
-        }
-        return "1." + userNames.get(maxKey1) + " - " + maxValue1 +
-                "\n2." + userNames.get(maxKey2) + " - " + maxValue2 +
-                "\n3." + userNames.get(maxKey3) + " - " + maxValue3;
+        if (userNames.get(maxKey3) != null)
+            top = top + "\n3." + userNames.get(maxKey3) + " - " + maxValue3;
+        return top;
     }
 }
