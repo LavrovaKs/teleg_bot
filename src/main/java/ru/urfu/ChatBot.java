@@ -47,7 +47,6 @@ public class ChatBot {
     private static final String TRUE_ANSWER = "Правильный ответ!";
     private static final String FALSE_ANSWER = "Правильный ответ: ";
     private static final String TIME_MESSAGE = "Время выполнения: ";
-    private static final String WELCOME_MESSAGE = "Приятно познакомиться";
 
 
     private final HashMap<String, String> answers = new HashMap<>();//ключ - chatId, значение - ответ
@@ -107,11 +106,6 @@ public class ChatBot {
             points.put(chatId, 0);
             mistakes.put(chatId, new ListTopic());
             userNames.put(chatId, userName);
-        }
-        if (statesOfBot.get(chatId).getCurrentState() instanceof WaitingName) {
-            statesOfBot.get(chatId).switchState();
-            userNames.put(chatId, command);
-            return WELCOME_MESSAGE;
         }
         if (command.equals(MY_POINT))
             return Integer.toString(points.get(chatId));
