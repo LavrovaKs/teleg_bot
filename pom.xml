@@ -30,20 +30,20 @@
       <artifactId>telegrambots</artifactId>
       <version>4.9.1</version>
     </dependency>
-      <dependency>
-        <groupId>com.discord4j</groupId>
-        <artifactId>discord4j-core</artifactId>
-        <version>3.1.2</version>
-      </dependency>
+    <dependency>
+      <groupId>net.dv8tion</groupId>
+      <artifactId>JDA</artifactId>
+      <version>4.2.0_222</version>
+    </dependency>
   </dependencies>
 
-<repositories>
-  <repository>
-    <id>jcenter</id>
-    <name>jcenter-bintray</name>
-    <url>https://jcenter.bintray.com</url>
-  </repository>
-</repositories>
+  <repositories>
+    <repository>
+      <id>jcenter</id>
+      <name>jcenter-bintray</name>
+      <url>https://jcenter.bintray.com</url>
+    </repository>
+  </repositories>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
