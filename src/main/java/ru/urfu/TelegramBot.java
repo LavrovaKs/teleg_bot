@@ -21,15 +21,15 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private static final String BOT_TOKEN = "1360870382:AAHQiNwIXLcctU6Qb2gUhoja5UWD79lT0K8";
     private static final String BOT_NAME = "ImformaticBot";
-    private ChatBot chatBot = new ChatBot();
+    private final ChatBot chatBot = new ChatBot();
 
-    private InlineKeyboardMarkup menuMarkup = new InlineKeyboardMarkup();
-    private InlineKeyboardButton topButton = new InlineKeyboardButton();
-    private InlineKeyboardButton mistakeButton = new InlineKeyboardButton();
-    private InlineKeyboardButton timeButton = new InlineKeyboardButton();
-    private InlineKeyboardButton exButton = new InlineKeyboardButton();
-    private InlineKeyboardButton pointButton = new InlineKeyboardButton();
-    private InlineKeyboardMarkup nullMarkup = new InlineKeyboardMarkup();
+    private final InlineKeyboardMarkup menuMarkup = new InlineKeyboardMarkup();
+    private final InlineKeyboardButton topButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton mistakeButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton timeButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton exButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton pointButton = new InlineKeyboardButton();
+    private final InlineKeyboardMarkup nullMarkup = new InlineKeyboardMarkup();
 
     /**
      * Метод инициализирует все кнопки

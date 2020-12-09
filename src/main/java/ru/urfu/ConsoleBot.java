@@ -28,8 +28,7 @@ public class ConsoleBot {
                 System.out.println("Введите ваше имя");
                 var text2 = new Scanner(System.in);
                 user_name = text2.nextLine();
-            }
-            else
+            } else
                 System.out.println(chatBot.analyzeCommand(str, chatId, user_name));
         }
     }

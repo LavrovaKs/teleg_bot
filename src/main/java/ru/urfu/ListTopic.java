@@ -1,5 +1,7 @@
 package ru.urfu;
 
+import java.util.Arrays;
+
 public class ListTopic {
 
     private static int info = 0;
@@ -10,34 +12,43 @@ public class ListTopic {
     private static int game = 0;
     private static int program = 0;
 
+    private static final String[] infoList = {"4", "7", "8", "11"};
+    private static final String[] systemsList = {"14"};
+    private static final String[] logicsList = {"2", "15"};
+    private static final String[] userList = {"1", "3", "9", "10", "13"};
+    private static final String[] algoList = {"5", "12", "16", "18"};
+    private static final String[] gameList = {"19", "20", "21"};
+    private static final String[] programList = {"6", "17", "22", "23"};
+
     /**
      * Метод анализирует ошибки
      *
-     * @param ex     номер задания
+     * @param ex номер задания
      */
-    public void analyzeMistake(String ex){
-        if (ex.equals("1") || ex.equals("3") || ex.equals("9") || ex.equals("10") || ex.equals("13"))
+    public void analyzeMistake(String ex) {
+        if (Arrays.binarySearch(userList, ex) >= 0)
             user = user + 1;
-        if (ex.equals("4") || ex.equals("7") || ex.equals("8") || ex.equals("11"))
+        if (Arrays.binarySearch(infoList, ex) >= 0)
             info = info + 1;
-        if (ex.equals("14"))
+        if (Arrays.binarySearch(systemsList, ex) >= 0)
             systems = systems + 1;
-        if (ex.equals("2") || ex.equals("15"))
+        if (Arrays.binarySearch(logicsList, ex) >= 0)
             logics = logics + 1;
-        if (ex.equals("5") || ex.equals("12") || ex.equals("16") || ex.equals("18"))
+        if (Arrays.binarySearch(algoList, ex) >= 0)
             algo = algo + 1;
-        if (ex.equals("19") || ex.equals("20") || ex.equals("21"))
+        if (Arrays.binarySearch(gameList, ex) >= 0)
             game = game + 1;
-        if (ex.equals("6") || ex.equals("17") || ex.equals("22") || ex.equals("23"))
+        if (Arrays.binarySearch(programList, ex) >= 0)
             program = program + 1;
     }
+
     /**
      * Метод выводит список всех ошибок
      *
      * @return список ошибок
      */
 
-    public String getMistake(){
+    public String getMistake() {
         var message = new StringBuilder();
         message.append("\nВам нужно повторить:");
         if (info > 0) {

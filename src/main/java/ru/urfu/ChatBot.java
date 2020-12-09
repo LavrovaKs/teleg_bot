@@ -190,7 +190,8 @@ public class ChatBot {
 
     /**
      * Метод составляет топ пользователей
-     * @return  топ
+     *
+     * @return топ
      */
     private String getTop() {
         var maxValue1 = 0;
@@ -215,13 +216,13 @@ public class ChatBot {
         }
         if (userNames.get(maxKey2) != null)
             top = top + "\n2." + userNames.get(maxKey2) + " - " + maxValue2;
-            for (Map.Entry<String, Integer> point : points.entrySet()) {
-                if (point.getValue() > maxValue3 && !point.getKey().equals(maxKey1)
-                        && !point.getKey().equals(maxKey2)) {
-                    maxValue3 = point.getValue();
-                    maxKey3 = point.getKey();
-                }
+        for (Map.Entry<String, Integer> point : points.entrySet()) {
+            if (point.getValue() > maxValue3 && !point.getKey().equals(maxKey1)
+                    && !point.getKey().equals(maxKey2)) {
+                maxValue3 = point.getValue();
+                maxKey3 = point.getKey();
             }
+        }
         if (userNames.get(maxKey3) != null)
             top = top + "\n3." + userNames.get(maxKey3) + " - " + maxValue3;
         return top;
