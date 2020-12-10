@@ -18,7 +18,7 @@ public class DiscordBot extends ListenerAdapter {
      * Тут DiscordBot просыпается и готов к работе
      */
     public static void main(String[] args) throws LoginException {
-        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg1ODU2ODUwNjM2NTcwNjQ1.X898OQ.FACsIzlR3hB6uo4NK91IR9xrAMw");
+        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg1ODU2ODUwNjM2NTcwNjQ1.X898OQ._T63LFiLAJ6KGsWMOolKeRm9wOY");
         JDA jda = null;
         DiscordBot discordBot = new DiscordBot();
         jdaBuilder.addEventListeners(discordBot);
@@ -27,23 +27,22 @@ public class DiscordBot extends ListenerAdapter {
         } catch (LoginException e){
             e.printStackTrace();
         }
-
+        assert jda != null;
         jda.getPresence().setStatus(OnlineStatus.IDLE);
         jda.getPresence().setActivity(Activity.playing("ЕГЭ по информатике"));
     }
 
     /**
-     * тут получаем сообщение и передаем в чат бота чтоб все работало как надо
-     * @param event - событие
+     * Тут получаем сообщение и передаем в чат бота чтоб все работало как надо
+     * @param event событие
      */
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
         if (event.getAuthor().isBot()) return;
         var message = event.getMessage().getContentRaw();
-        String id = event.getMessage().getId();
         String userId = event.getAuthor().getId();
-        String user = event.getAuthor().toString();
+        String user = event.getAuthor().getName();
         var answer = " ";
         try {
             answer = chatBot.analyzeCommand(message, userId, user);

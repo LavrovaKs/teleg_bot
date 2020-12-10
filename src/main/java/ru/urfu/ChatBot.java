@@ -107,6 +107,8 @@ public class ChatBot {
             mistakes.put(chatId, new ListTopic());
             userNames.put(chatId, userName);
         }
+        if (command.equals("/info"))
+            return "";
         if (command.equals(MY_POINT))
             return Integer.toString(points.get(chatId));
         if (command.equals(START))
