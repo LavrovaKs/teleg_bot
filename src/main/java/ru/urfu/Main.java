@@ -1,5 +1,6 @@
 package ru.urfu;
 
+
 import java.io.IOException;
 
 public class Main {

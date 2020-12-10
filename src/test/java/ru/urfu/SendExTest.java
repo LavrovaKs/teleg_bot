@@ -17,12 +17,14 @@ import java.util.ArrayList;
  */
 public class SendExTest {
 
-    ChatBot chatBot = new ChatBot();
-    String chatId = "879";
+    private ChatBot chatBot = new ChatBot();
+    private static final String CHAT_ID = "859";
+    private static final String USER_NAME = "Telegram_Bot";
+
 
     @Before
     public void doCommand() throws IOException {
-        chatBot.analyzeCommand("/exercise", chatId);
+        chatBot.analyzeCommand("/exercise", CHAT_ID, USER_NAME);
     }
 
     /**
@@ -52,7 +54,7 @@ public class SendExTest {
      */
     @Test
     public void toMuchNumberTest() throws IOException {
-        var mes = chatBot.analyzeCommand("26", chatId);
+        var mes = chatBot.analyzeCommand("26", CHAT_ID, USER_NAME);
         Assert.assertEquals("Нет такого номера задания", mes);
     }
 
@@ -61,7 +63,7 @@ public class SendExTest {
      */
     @Test
     public void noExerciseTest() throws IOException {
-        var mes = chatBot.analyzeCommand("0", chatId);
+        var mes = chatBot.analyzeCommand("0", CHAT_ID, USER_NAME);
         Assert.assertEquals("Нет такого номера задания", mes);
 
     }
@@ -71,7 +73,7 @@ public class SendExTest {
      */
     @Test
     public void negativeExTest() throws IOException {
-        var mes = chatBot.analyzeCommand("-7", chatId);
+        var mes = chatBot.analyzeCommand("-7", CHAT_ID, USER_NAME);
         Assert.assertEquals("Нет такого номера задания", mes);
 
     }
@@ -81,7 +83,7 @@ public class SendExTest {
      */
     @Test
     public void findExTest() throws IOException {
-        var actual = chatBot.analyzeCommand("5", chatId);
+        var actual = chatBot.analyzeCommand("5", CHAT_ID, USER_NAME);
         Assert.assertEquals(sendExercise().getExercise(), actual);
     }
 
@@ -90,8 +92,8 @@ public class SendExTest {
      */
     @Test
     public void trueAnswerTest() throws IOException {
-        chatBot.analyzeCommand("5", chatId);
-        var actual = chatBot.analyzeCommand(sendExercise().getAnswer(), chatId);
+        chatBot.analyzeCommand("5", CHAT_ID, USER_NAME);
+        var actual = chatBot.analyzeCommand(sendExercise().getAnswer(), CHAT_ID, USER_NAME);
         Assert.assertEquals("Правильный ответ!", actual);
     }
 
@@ -100,8 +102,8 @@ public class SendExTest {
      */
     @Test
     public void falseAnswerTest() throws IOException {
-        chatBot.analyzeCommand("5", chatId);
-        var actual = chatBot.analyzeCommand("352f", chatId);
+        chatBot.analyzeCommand("5", CHAT_ID, USER_NAME);
+        var actual = chatBot.analyzeCommand("352f", CHAT_ID, USER_NAME);
         var expected = "Правильный ответ: " + sendExercise().getAnswer();
         Assert.assertEquals(expected, actual);
     }
