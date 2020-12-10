@@ -2,8 +2,6 @@ package ru.urfu;
 
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,7 +15,7 @@ public class DiscordBot extends ListenerAdapter {
     public static String pref = "/";
 
     /**
-     * Тут вообщем DiscordBot просыпается и готов к работе
+     * Тут DiscordBot просыпается и готов к работе
      */
     public static void main(String[] args) throws LoginException {
         JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg1ODU2ODUwNjM2NTcwNjQ1.X898OQ.FACsIzlR3hB6uo4NK91IR9xrAMw");
@@ -36,7 +34,7 @@ public class DiscordBot extends ListenerAdapter {
 
     /**
      * тут получаем сообщение и передаем в чат бота чтоб все работало как надо
-     * @param event
+     * @param event - событие
      */
 
     @Override
