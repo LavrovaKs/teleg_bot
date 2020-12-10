@@ -11,14 +11,16 @@ import java.io.IOException;
 
 
 public class DiscordBot extends ListenerAdapter {
+
     final ChatBot chatBot = new ChatBot();
     public static String pref = "/";
+    private static final String BOT_TOKEN = "Nzg1ODU2ODUwNjM2NTcwNjQ1.X898OQ.9n-tmG6UfIYKgaXMoZ80j6cdV4Q";
 
     /**
      * Тут DiscordBot просыпается и готов к работе
      */
     public static void main(String[] args) throws LoginException {
-        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg1ODU2ODUwNjM2NTcwNjQ1.X898OQ._T63LFiLAJ6KGsWMOolKeRm9wOY");
+        JDABuilder jdaBuilder = JDABuilder.createDefault(BOT_TOKEN);
         JDA jda = null;
         DiscordBot discordBot = new DiscordBot();
         jdaBuilder.addEventListeners(discordBot);
