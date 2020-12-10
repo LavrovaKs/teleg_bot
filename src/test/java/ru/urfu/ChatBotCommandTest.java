@@ -13,26 +13,24 @@ import java.io.IOException;
  */
 public class ChatBotCommandTest {
 
-    ChatBot chatBot = new ChatBot();
-    String chatId = "859";
-    String userName = "Telegram_Bot";
+    private ChatBot chatBot = new ChatBot();
+    private static final String CHAT_ID = "859";
+    private static final String USER_NAME = "Telegram_Bot";
 
     /**
      * Проверка, что при старте бот присылает соответствующее сообщение
      */
     @Test
     public void startTest() throws IOException {
-        var mes = chatBot.analyzeCommand("/start", chatId);
+        var mes = chatBot.analyzeCommand("/start", CHAT_ID, USER_NAME);
         Assert.assertEquals("Привет, я твой помощник в подготовке к ЕГЭ по информатике." +
                 "\nсписок доступных команд:" +
                 "\n/help - открыть справку" +
-                "\n/exercise - выбор задания" +
-                "\n/time_ex - выполнение задания на время" +
-                "\n/user_name - зарегистрировать свое имя" +
-                "\n/my_point - посмотреть количество набранных баллов" +
-                "\n/my_name - посмотреть свое имя" +
-                "\n/mistake - анализ частых ошибок по темам" +
-                "\n/top - вывод лидеров рейтинга", mes);
+                "\n/exercise - \uD83D\uDCDD выбор задания" +
+                "\n/time_ex - ⏳ выполнение задания на время" +
+                "\n/my_point - \uD83D\uDCCB посмотреть количество набранных баллов" +
+                "\n/mistake - ⛔ анализ частых ошибок по темам" +
+                "\n/top - \uD83D\uDCCA вывод лидеров рейтинга", mes);
     }
 
     /**
@@ -40,16 +38,14 @@ public class ChatBotCommandTest {
      */
     @Test
     public void helpTest() throws IOException {
-        var mes = chatBot.analyzeCommand("/help", chatId);
+        var mes = chatBot.analyzeCommand("/help", CHAT_ID, USER_NAME);
         Assert.assertEquals("Список доступных команд: " +
                 "\n/help - открыть справку" +
-                "\n/exercise - выбор задания" +
-                "\n/time_ex - выполнение задания на время" +
-                "\n/user_name - зарегистрировать свое имя" +
-                "\n/my_point - посмотреть количество набранных баллов" +
-                "\n/my_name - посмотреть свое имя" +
-                "\n/mistake - анализ частых ошибок по темам" +
-                "\n/top - вывод лидеров рейтинга", mes);
+                "\n/exercise - \uD83D\uDCDD выбор задания" +
+                "\n/time_ex - ⏳ выполнение задания на время" +
+                "\n/my_point - \uD83D\uDCCB посмотреть количество набранных баллов" +
+                "\n/mistake - ⛔ анализ частых ошибок по темам" +
+                "\n/top - \uD83D\uDCCA вывод лидеров рейтинга", mes);
     }
 
     /**
@@ -57,7 +53,7 @@ public class ChatBotCommandTest {
      */
     @Test
     public void noComTest() throws IOException {
-        var mes = chatBot.analyzeCommand("gdkt", chatId);
+        var mes = chatBot.analyzeCommand("gdkt", CHAT_ID, USER_NAME);
         Assert.assertEquals("Не уверен, что такая команда мне по силам", mes);
     }
 
@@ -66,7 +62,7 @@ public class ChatBotCommandTest {
      */
     @Test
     public void exTest() throws IOException {
-        var mes = chatBot.analyzeCommand("/exercise", chatId);
+        var mes = chatBot.analyzeCommand("/exercise", CHAT_ID, USER_NAME);
         Assert.assertEquals("Введите номер задания", mes);
     }
 
@@ -75,18 +71,7 @@ public class ChatBotCommandTest {
      */
     @Test
     public void timeTest() throws IOException {
-        var mes = chatBot.analyzeCommand("/time_ex", chatId);
+        var mes = chatBot.analyzeCommand("/time_ex", CHAT_ID, USER_NAME);
         Assert.assertEquals("Введите номер задания", mes);
-    }
-
-    /**
-     * Проверка команды /user_name
-     */
-    @Test
-    public void userNameTest() throws IOException {
-        chatBot.analyzeCommand("/user_name", chatId);
-        chatBot.analyzeCommand(userName, chatId);
-        var mes = chatBot.analyzeCommand("/my_name", chatId);
-        Assert.assertEquals(userName, mes);
     }
 }

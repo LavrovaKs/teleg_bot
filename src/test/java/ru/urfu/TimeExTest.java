@@ -19,12 +19,14 @@ import java.util.Date;
  */
 public class TimeExTest {
 
-    ChatBot chatBot = new ChatBot();
-    String chatId = "879";
+    private ChatBot chatBot = new ChatBot();
+    private static final String CHAT_ID = "859";
+    private static final String USER_NAME = "Telegram_Bot";
+
 
     @Before
     public void doCommand() throws IOException {
-        chatBot.analyzeCommand("/time_ex", chatId);
+        chatBot.analyzeCommand("/time_ex", CHAT_ID, USER_NAME);
     }
 
     /**
@@ -54,7 +56,7 @@ public class TimeExTest {
      */
     @Test
     public void toMuchNumberTest() throws IOException {
-        var mes = chatBot.analyzeCommand("26", chatId);
+        var mes = chatBot.analyzeCommand("26", CHAT_ID, USER_NAME);
         Assert.assertEquals("Нет такого номера задания", mes);
     }
 
@@ -63,7 +65,7 @@ public class TimeExTest {
      */
     @Test
     public void noExerciseTest() throws IOException {
-        var mes = chatBot.analyzeCommand("0", chatId);
+        var mes = chatBot.analyzeCommand("0", CHAT_ID, USER_NAME);
         Assert.assertEquals("Нет такого номера задания", mes);
 
     }
@@ -73,7 +75,7 @@ public class TimeExTest {
      */
     @Test
     public void negativeExTest() throws IOException {
-        var mes = chatBot.analyzeCommand("-7", chatId);
+        var mes = chatBot.analyzeCommand("-7", CHAT_ID, USER_NAME);
         Assert.assertEquals("Нет такого номера задания", mes);
 
     }
@@ -83,7 +85,7 @@ public class TimeExTest {
      */
     @Test
     public void findExTest() throws IOException {
-        var actual = chatBot.analyzeCommand("5", chatId);
+        var actual = chatBot.analyzeCommand("5", CHAT_ID, USER_NAME);
         Assert.assertEquals(sendExercise().getExercise(), actual);
     }
 
@@ -92,9 +94,9 @@ public class TimeExTest {
      */
     @Test
     public void trueAnswerTest() throws IOException {
-        chatBot.analyzeCommand("5", chatId);
+        chatBot.analyzeCommand("5", CHAT_ID, USER_NAME);
         var start = new Date();
-        var actual = chatBot.analyzeCommand(sendExercise().getAnswer(), chatId);
+        var actual = chatBot.analyzeCommand(sendExercise().getAnswer(), CHAT_ID, USER_NAME);
         var end = new Date();
         var dif = (int) ((end.getTime() - start.getTime()) / 1000);
         var expected = "Правильный ответ!" + "\n" + "Время выполнения: " + dif + " секунд";
@@ -106,9 +108,9 @@ public class TimeExTest {
      */
     @Test
     public void falseAnswerTest() throws IOException, InterruptedException {
-        chatBot.analyzeCommand("5", chatId);
+        chatBot.analyzeCommand("5", CHAT_ID, USER_NAME);
         var start = new Date();
-        var actual = chatBot.analyzeCommand("135", chatId);
+        var actual = chatBot.analyzeCommand("135", CHAT_ID, USER_NAME);
         var end = new Date();
         var dif = (int) ((end.getTime() - start.getTime()) / 1000);
         var expected = "Правильный ответ: " + sendExercise().getAnswer() +
@@ -121,10 +123,10 @@ public class TimeExTest {
      */
     @Test
     public void timeTest() throws IOException, InterruptedException {
-        chatBot.analyzeCommand("5", chatId);
+        chatBot.analyzeCommand("5", CHAT_ID, USER_NAME);
         var start = new Date();
         Thread.sleep(2000);
-        var actual = chatBot.analyzeCommand(sendExercise().getAnswer(), chatId);
+        var actual = chatBot.analyzeCommand(sendExercise().getAnswer(), CHAT_ID, USER_NAME);
         var end = new Date();
         var dif = (int) ((end.getTime() - start.getTime()) / 1000);
         var expected = "Правильный ответ!" + "\n" + "Время выполнения: " + dif + " секунд";

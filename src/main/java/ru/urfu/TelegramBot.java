@@ -6,9 +6,8 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.IOException;
@@ -22,68 +21,124 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private static final String BOT_TOKEN = "1360870382:AAHQiNwIXLcctU6Qb2gUhoja5UWD79lT0K8";
     private static final String BOT_NAME = "ImformaticBot";
-    private ChatBot chatBot = new ChatBot();
+    private final ChatBot chatBot = new ChatBot();
 
+    private final InlineKeyboardMarkup menuMarkup = new InlineKeyboardMarkup();
+    private final InlineKeyboardButton topButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton mistakeButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton timeButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton exButton = new InlineKeyboardButton();
+    private final InlineKeyboardButton pointButton = new InlineKeyboardButton();
+    private final InlineKeyboardMarkup nullMarkup = new InlineKeyboardMarkup();
 
+    /**
+     * Метод инициализирует все кнопки
+     */
+    private void initButtons() {
+        topButton.setText("\uD83D\uDCCA");
+        topButton.setCallbackData("/top");
+        timeButton.setText("⏳");
+        timeButton.setCallbackData("/time_ex");
+        mistakeButton.setText("⛔");
+        mistakeButton.setCallbackData("/mistake");
+        exButton.setText("\uD83D\uDCDD");
+        exButton.setCallbackData("/exercise");
+        pointButton.setText("\uD83D\uDCCB");
+        pointButton.setCallbackData("/my_point");
+    }
+
+    /**
+     * Инициализация клавиатуры
+     */
+    TelegramBot() {
+        initButtons();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(topButton);
+        row.add(timeButton);
+        row.add(exButton);
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        row2.add(pointButton);
+        row2.add(mistakeButton);
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(row);
+        rowList.add(row2);
+        menuMarkup.setKeyboard(rowList);
+    }
+
+    /**
+     * Основной метод, которыйполучает сообщение от пользователя и отправляет на него ответ
+     *
+     * @param update сообщение
+     */
     @Override
     public void onUpdateReceived(Update update) {
-        Message message = update.getMessage();
-        String txt = message.getText();
-        var text = "";
-        try {
-            text = chatBot.analyzeCommand(txt, message.getChatId().toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        var answer = new SendMessage();
+        if (update.hasMessage()) {
+            try {
+                answer = handleMessage(update);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
-        sendMessage(message, text);
-    }
-
-    /**
-     * Метод отвечает за работу кнопок в самом Telegramm
-     */
-    public void setButton(SendMessage sendMessage) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
-
-        List<KeyboardRow> keyboardRowList = new ArrayList<>();
-        KeyboardRow keyboardRow_1 = new KeyboardRow();
-        KeyboardRow keyboardRow_2 = new KeyboardRow();
-
-        keyboardRow_1.add(new KeyboardButton("/help"));
-        keyboardRow_1.add(new KeyboardButton("/start"));
-        keyboardRow_1.add(new KeyboardButton("/exercise"));
-        keyboardRow_1.add(new KeyboardButton("/user_name"));
-        keyboardRow_2.add(new KeyboardButton("/time_ex"));
-        keyboardRow_2.add(new KeyboardButton("/my_point"));
-        keyboardRow_2.add(new KeyboardButton("/top"));
-        keyboardRow_2.add(new KeyboardButton("/mistake"));
-
-        keyboardRowList.add(keyboardRow_1);
-        keyboardRowList.add(keyboardRow_2);
-        replyKeyboardMarkup.setKeyboard(keyboardRowList);
-
-    }
-
-    /**
-     * Метода отправляет сообщение в диалоге с telegram-ботом
-     *
-     * @param msg  сообщение пользователя
-     * @param text текст сообщения
-     */
-    private void sendMessage(Message msg, String text) {
-
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(msg.getChatId().toString());
-        sendMessage.setText(text);
+        if (update.hasCallbackQuery()) {
+            try {
+                answer = handleCallback(update);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            setButton(sendMessage);
-            execute(sendMessage);
+            execute(answer);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Метод обрабатывет сообщения, отправленные пользователем
+     *
+     * @param update сообщение
+     * @return SendMessage
+     */
+    private SendMessage handleMessage(Update update) throws IOException {
+        Message message = update.getMessage();
+        var user = message.getChat().getLastName() + " " + message.getChat().getFirstName();
+        var result = chatBot.analyzeCommand(message.getText(), message.getChatId().toString(), user);
+
+        var answer = new SendMessage();
+        answer.setChatId(update.getMessage().getChatId());
+        answer.setText(result);
+
+        if (message.getText().equals("/help") || message.getText().equals("/start")
+                || message.getText().equals("/top") || message.getText().equals("/mistake"))
+            answer.setReplyMarkup(menuMarkup);
+        else answer.setReplyMarkup(nullMarkup);
+
+        return answer;
+    }
+
+    /**
+     * Метод обрабатывает сообщение, полученные при нажатии кнопки
+     *
+     * @param update сообщение
+     * @return SendMessage
+     */
+    private SendMessage handleCallback(Update update) throws IOException {
+        var command = update.getCallbackQuery().getData();
+        var message = update.getCallbackQuery().getMessage();
+        var user = message.getChat().getLastName() + " " + message.getChat().getFirstName();
+        String result = chatBot.analyzeCommand(command, message.getChatId().toString(), user);
+
+        SendMessage answer = new SendMessage();
+        answer.setChatId(update.getCallbackQuery().getMessage().getChatId());
+        answer.setText(result);
+
+        if (command.equals("/help") || command.equals("/start") || command.equals("/top")
+                || command.equals("/mistake"))
+            answer.setReplyMarkup(menuMarkup);
+        else answer.setReplyMarkup(nullMarkup);
+
+        return answer;
     }
 
     /**
@@ -108,9 +163,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
-        TelegramBotsApi botapi = new TelegramBotsApi();
+        TelegramBotsApi botApi = new TelegramBotsApi();
         try {
-            botapi.registerBot(new TelegramBot());
+            botApi.registerBot(new TelegramBot());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

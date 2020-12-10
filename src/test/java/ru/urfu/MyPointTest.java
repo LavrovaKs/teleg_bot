@@ -14,8 +14,9 @@ import java.util.ArrayList;
  */
 public class MyPointTest {
 
-    ChatBot chatBot = new ChatBot();
-    String chatId = "859";
+    private ChatBot chatBot = new ChatBot();
+    private static final String USER_NAME = "Telegram_Bot";
+    private String chatId = "859";
 
     /**
      * Найдем текст задания и ответ
@@ -44,7 +45,7 @@ public class MyPointTest {
      */
     @Test
     public void startPoint() throws IOException {
-        var mes = chatBot.analyzeCommand("/my_point", chatId);
+        var mes = chatBot.analyzeCommand("/my_point", chatId, USER_NAME);
         Assert.assertEquals("0", mes);
     }
 
@@ -53,10 +54,10 @@ public class MyPointTest {
      */
     @Test
     public void falseAnswer() throws IOException {
-        chatBot.analyzeCommand("/exercise", chatId);
-        chatBot.analyzeCommand("5", chatId);
-        chatBot.analyzeCommand("as", chatId);
-        var actual = chatBot.analyzeCommand("/my_point", chatId);
+        chatBot.analyzeCommand("/exercise", chatId, USER_NAME);
+        chatBot.analyzeCommand("5", chatId, USER_NAME);
+        chatBot.analyzeCommand("as", chatId, USER_NAME);
+        var actual = chatBot.analyzeCommand("/my_point", chatId, USER_NAME);
         Assert.assertEquals("0", actual);
     }
 
@@ -65,10 +66,10 @@ public class MyPointTest {
      */
     @Test
     public void trueAnswer() throws IOException {
-        chatBot.analyzeCommand("/exercise", chatId);
-        chatBot.analyzeCommand("5", chatId);
-        chatBot.analyzeCommand(sendExercise().getAnswer(), chatId);
-        var actual = chatBot.analyzeCommand("/my_point", chatId);
+        chatBot.analyzeCommand("/exercise", chatId, USER_NAME);
+        chatBot.analyzeCommand("5", chatId, USER_NAME);
+        chatBot.analyzeCommand(sendExercise().getAnswer(), chatId, USER_NAME);
+        var actual = chatBot.analyzeCommand("/my_point", chatId, USER_NAME);
         Assert.assertEquals("1", actual);
     }
 
@@ -77,30 +78,42 @@ public class MyPointTest {
      */
     @Test
     public void topTest() throws IOException {
-        chatBot.analyzeCommand("/user_name", chatId);
-        chatBot.analyzeCommand("third", chatId);
+        chatBot.analyzeCommand("/user_name", chatId, "third");
         for (int i = 0; i < 5; i++) {
-            chatBot.analyzeCommand("/exercise", chatId);
-            chatBot.analyzeCommand("5", chatId);
-            chatBot.analyzeCommand(sendExercise().getAnswer(), chatId);
+            chatBot.analyzeCommand("/exercise", chatId, "third");
+            chatBot.analyzeCommand("5", chatId, "third");
+            chatBot.analyzeCommand(sendExercise().getAnswer(), chatId, "third");
         }
-        chatBot.analyzeCommand("/user_name", "777");
-        chatBot.analyzeCommand("first", "777");
+        chatBot.analyzeCommand("/user_name", "777", "first");
         for (int i = 0; i < 15; i++) {
-            chatBot.analyzeCommand("/exercise", "777");
-            chatBot.analyzeCommand("5", "777");
-            chatBot.analyzeCommand(sendExercise().getAnswer(), "777");
+            chatBot.analyzeCommand("/exercise", "777", "first");
+            chatBot.analyzeCommand("5", "777", "first");
+            chatBot.analyzeCommand(sendExercise().getAnswer(), "777", "first");
         }
-        chatBot.analyzeCommand("/user_name", "222");
-        chatBot.analyzeCommand("second", "222");
+        chatBot.analyzeCommand("/user_name", "222", "second");
         for (int i = 0; i < 10; i++) {
-            chatBot.analyzeCommand("/exercise", "222");
-            chatBot.analyzeCommand("5", "222");
-            chatBot.analyzeCommand(sendExercise().getAnswer(), "222");
+            chatBot.analyzeCommand("/exercise", "222", "second");
+            chatBot.analyzeCommand("5", "222", "second");
+            chatBot.analyzeCommand(sendExercise().getAnswer(), "222", "second");
         }
-        var actual = chatBot.analyzeCommand("/top", chatId);
+        var actual = chatBot.analyzeCommand("/top", chatId, "second");
         Assert.assertEquals("1.first - 15" + "\n2.second - 10" +
                 "\n3.third - 5", actual);
+    }
+
+    /**
+     * Тест на то, что команда /top не выводит null
+     */
+    @Test
+    public void nullTopTest() throws IOException {
+        chatBot.analyzeCommand("/user_name", chatId, "third");
+        for (int i = 0; i < 5; i++) {
+            chatBot.analyzeCommand("/exercise", chatId, "third");
+            chatBot.analyzeCommand("5", chatId, "third");
+            chatBot.analyzeCommand(sendExercise().getAnswer(), chatId, "third");
+        }
+        var actual = chatBot.analyzeCommand("/top", chatId, "second");
+        Assert.assertEquals("1.third - 5", actual);
     }
 
     /**
@@ -108,13 +121,13 @@ public class MyPointTest {
      */
     @Test
     public void mistakeTest() throws IOException {
-        chatBot.analyzeCommand("/exercise", chatId);
-        chatBot.analyzeCommand("5", chatId);
-        chatBot.analyzeCommand("as", chatId);
-        chatBot.analyzeCommand("/exercise", chatId);
-        chatBot.analyzeCommand("22", chatId);
-        chatBot.analyzeCommand("bf", chatId);
-        var actual = chatBot.analyzeCommand("/mistake", chatId);
+        chatBot.analyzeCommand("/exercise", chatId, USER_NAME);
+        chatBot.analyzeCommand("5", chatId, USER_NAME);
+        chatBot.analyzeCommand("as", chatId, USER_NAME);
+        chatBot.analyzeCommand("/exercise", chatId, USER_NAME);
+        chatBot.analyzeCommand("22", chatId, USER_NAME);
+        chatBot.analyzeCommand("bf", chatId, USER_NAME);
+        var actual = chatBot.analyzeCommand("/mistake", chatId, USER_NAME);
         var str = "\nВам нужно повторить: " + Topic.valueOf("ALGO") + " " + Topic.valueOf("PROGRAM");
         Assert.assertEquals("Ваши ошибки:" +
                 "\n" + Topic.valueOf("INFO") + " - 0" + "\n" + Topic.valueOf("SYSTEMS") + " - 0" +
