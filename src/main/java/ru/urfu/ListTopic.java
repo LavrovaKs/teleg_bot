@@ -26,6 +26,7 @@ public class ListTopic {
      * @param ex номер задания
      */
     public void analyzeMistake(String ex) {
+        sortList();
         if (Arrays.binarySearch(userList, ex) >= 0)
             user = user + 1;
         if (Arrays.binarySearch(infoList, ex) >= 0)
@@ -40,6 +41,19 @@ public class ListTopic {
             game = game + 1;
         if (Arrays.binarySearch(programList, ex) >= 0)
             program = program + 1;
+    }
+
+    /**
+     * Отсортируем массивы
+     */
+    private void sortList(){
+        Arrays.sort(infoList);
+        Arrays.sort(logicsList);
+        Arrays.sort(systemsList);
+        Arrays.sort(userList);
+        Arrays.sort(algoList);
+        Arrays.sort(gameList);
+        Arrays.sort(programList);
     }
 
     /**

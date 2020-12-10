@@ -123,9 +123,10 @@ public class DiscordBot extends ListenerAdapter {
         if (event.getAuthor().isBot()) return;
         var message = event.getMessage().getContentRaw();
         String id = event.getMessage().getId();
+        String user = event.getAuthor().toString();
         var answer = " ";
         try {
-            answer = chatBot.analyzeCommand(message, id);
+            answer = chatBot.analyzeCommand(message, id, user);
         } catch (IOException e) {
             e.printStackTrace();
         }

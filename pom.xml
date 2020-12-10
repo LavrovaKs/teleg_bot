@@ -45,14 +45,6 @@
     </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>jcenter</id>
-      <name>jcenter-bintray</name>
-      <url>https://jcenter.bintray.com</url>
-    </repository>
-  </repositories>
-
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
