@@ -14,7 +14,7 @@ public class DiscordBot extends ListenerAdapter {
 
     final ChatBot chatBot = new ChatBot();
     public static String pref = "/";
-    private static final String BOT_TOKEN = "Nzg1ODU2ODUwNjM2NTcwNjQ1.X898OQ.9n-tmG6UfIYKgaXMoZ80j6cdV4Q";
+    private static final String BOT_TOKEN = "Nzg1ODU2ODUwNjM2NTcwNjQ1.X898OQ.Ks8JIv5GP6I6yvUAppKWl-RblFY";
 
     /**
      * Тут DiscordBot просыпается и готов к работе
