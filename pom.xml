@@ -87,6 +87,19 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+        <plugin>
+          <groupId>com.heroku.sdk</groupId>
+          <artifactId>heroku-maven-plugin</artifactId>
+          <version>2.0.8</version>
+          <configuration>
+            <appName>telegram-bot-oop</appName>
+            <processTypes>
+              <worker>
+                java $JAVA_OPTS -cp target/classes:target/dependency/teleg_bot\src\main\java\ru\urfu\TelegramBot
+              </worker>
+            </processTypes>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
